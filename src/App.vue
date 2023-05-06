@@ -126,8 +126,64 @@
   </v-row>
   <v-row justify="center" align="center">
     <v-col cols="12" class="text-center mb-5">
-      <v-btn class="mr-2" color="primary">選手名入力</v-btn>
-      <v-btn class="mr-2" color="warning">リセット</v-btn>
+      <v-dialog v-model="state.isPlayerNameDialogOpen" width="500">
+        <template v-slot:activator="{ props }">
+          <v-btn class="mr-2" color="primary" v-bind="props">選手名入力</v-btn>
+        </template>
+
+        <v-card>
+          <v-card-text>
+            <v-row>
+              <v-col cols="5">
+                <v-text-field
+                  v-model="data.team.red"
+                  variant="outlined"
+                  bg-color="error"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="2" class="text-center">
+                <p>チーム名</p>
+              </v-col>
+              <v-col cols="5">
+                <v-text-field
+                  v-model="data.team.white"
+                  variant="outlined"
+                  bg-color="grey"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row v-for="i in 5" :key="i">
+              <v-col cols="5">
+                <v-text-field
+                  v-model="data.players.red[i - 1].name"
+                  variant="outlined"
+                  bg-color="error"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="2" class="text-center">
+                <p>{{ order[i - 1] }}</p>
+              </v-col>
+              <v-col cols="5">
+                <v-text-field
+                  v-model="data.players.white[i - 1].name"
+                  variant="outlined"
+                  bg-color="grey"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn
+              color="primary"
+              block
+              @click="state.isPlayerNameDialogOpen = false"
+            >
+              閉じる
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <v-btn class="mr-2" color="warning" @click="reset">リセット</v-btn>
       <v-btn color="info" @click="downloadImg">ダウンロード</v-btn>
     </v-col>
     <v-col cols="6" class="text-right">
@@ -173,21 +229,18 @@ const data = reactive({
   },
   result: {
     ippons: {
-      red: 7,
+      red: 0,
       white: 0,
     },
     wins: {
-      red: 4,
+      red: 0,
       white: 0,
     },
     hansoku: {
       red: 0,
       white: 0,
     },
-    draw: {
-      red: [false, false, false, false, false],
-      white: [false, false, false, false, false],
-    },
+    draw: [false, false, false, false, false],
   },
   team: {
     red: "",
@@ -211,6 +264,12 @@ const data = reactive({
   },
 });
 
+const state = reactive({
+  isPlayerNameDialogOpen: false,
+});
+
+const order = ["先鋒", "次鋒", "中堅", "副将", "大将"];
+
 function ippon(
   type: "コ" | "ツ" | "ド" | "メ" | "▲" | "反",
   team: "red" | "white"
@@ -230,6 +289,7 @@ function ippon(
   }
 
   data.score[team][data.playing].push(type as never);
+  calcWinPoint();
 }
 
 function revert(team: "red" | "white") {
@@ -241,6 +301,7 @@ function revert(team: "red" | "white") {
   }
 
   data.score[team][data.playing].pop();
+  calcWinPoint();
 }
 
 function changePlayer(type: "next" | "prev") {
@@ -272,6 +333,51 @@ function changePlayer(type: "next" | "prev") {
       data.playing--;
     }
   }
+}
+
+function calcWinPoint() {
+  let ipponCount = {
+    red: 0,
+    white: 0,
+  };
+  let winCount = {
+    red: 0,
+    white: 0,
+  };
+
+  for (let i = 0; i < 5; i++) {
+    let red = 0;
+    let white = 0;
+
+    for (const team of ["red", "white"]) {
+      const record = data.score[team as keyof (typeof data)["score"]][i];
+      const filtered = record.filter((r) => r !== "▲" && r !== "反");
+
+      team === "red" ? (red = filtered.length) : (white = filtered.length);
+    }
+
+    ipponCount.red += red;
+    ipponCount.white += white;
+
+    if (red < white) {
+      winCount.white++;
+      data.result.draw[i] = false;
+    } else if (red > white) {
+      winCount.red++;
+      data.result.draw[i] = false;
+    } else {
+      data.result.draw[i] = true;
+    }
+
+    data.result.ippons.red = ipponCount.red;
+    data.result.ippons.white = ipponCount.white;
+    data.result.wins.red = winCount.red;
+    data.result.wins.white = winCount.white;
+  }
+}
+
+function reset() {
+  alert("未実装です。再読み込みで代用してください。");
 }
 
 function downloadImg() {
