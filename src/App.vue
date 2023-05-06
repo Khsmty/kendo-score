@@ -1,16 +1,41 @@
 <template>
   <v-row class="mt-8" justify="center" align-content="center">
     <v-col style="flex-grow: 0">
-      <div ref="scoreboard" style="padding: 12px">
+      <div ref="scoreboard" class="scoreboard-parent" style="padding: 12px">
         <table class="scoreboard text-center">
           <tbody>
             <tr>
               <th class="header teamname">チーム名</th>
-              <th class="header" colspan="2">先鋒</th>
-              <th class="header" colspan="2">次鋒</th>
-              <th class="header" colspan="2">中堅</th>
-              <th class="header" colspan="2">副将</th>
-              <th class="header" colspan="2">大将</th>
+              <th
+                :class="'header ' + data.playing === 0 ? 'nowplaying' : ''"
+                colspan="2"
+              >
+                先鋒
+              </th>
+              <th
+                :class="'header ' + data.playing === 1 ? 'nowplaying' : ''"
+                colspan="2"
+              >
+                次鋒
+              </th>
+              <th
+                :class="'header ' + data.playing === 2 ? 'nowplaying' : ''"
+                colspan="2"
+              >
+                中堅
+              </th>
+              <th
+                :class="'header ' + data.playing === 3 ? 'nowplaying' : ''"
+                colspan="2"
+              >
+                副将
+              </th>
+              <th
+                :class="'header ' + data.playing === 4 ? 'nowplaying' : ''"
+                colspan="2"
+              >
+                大将
+              </th>
               <th class="katiten" rowspan="2">勝点</th>
               <th class="header" style="width: 80px">代表戦</th>
             </tr>
@@ -121,6 +146,11 @@
             </tr>
           </tbody>
         </table>
+        <div v-if="data.result.draw[0]" class="drawmark-1">×</div>
+        <div v-if="data.result.draw[1]" class="drawmark-2">×</div>
+        <div v-if="data.result.draw[2]" class="drawmark-3">×</div>
+        <div v-if="data.result.draw[3]" class="drawmark-4">×</div>
+        <div v-if="data.result.draw[4]" class="drawmark-5">×</div>
       </div>
     </v-col>
   </v-row>
@@ -305,34 +335,41 @@ function revert(team: "red" | "white") {
 }
 
 function changePlayer(type: "next" | "prev") {
-  if (type === "next") {
-    if (data.playing === 4) {
-      data.playing = 6;
-      data.status = "対戦が終了しました";
-    } else {
-      data.playing++;
-
-      const shogo =
-        data.playing === 0
-          ? "先鋒"
-          : data.playing === 1
-          ? "次鋒"
-          : data.playing === 2
-          ? "中堅"
-          : data.playing === 3
-          ? "副将"
-          : "大将";
-      data.status = `${shogo} (${data.players.red[data.playing].name} vs ${
-        data.players.white[data.playing].name
-      })`;
-    }
+  if (type === "next" && data.playing === 4) {
+    data.playing = 6;
+    data.status = "対戦が終了しました";
+  } else if (type === "prev" && data.playing === -1) {
+    return;
+  } else if (type === "next" && data.playing === 6) {
+    return;
+  } else if (type === "prev" && data.playing === 6) {
+    data.playing = 4;
+  } else if (type === "prev" && data.playing === 0) {
+    data.playing = -1;
+    data.status = "まだ対戦開始していません";
   } else {
-    if (data.playing === 0) {
-      data.playing = 4;
-    } else {
+    if (type === "next") {
+      data.playing++;
+    } else if (type === "prev") {
       data.playing--;
     }
+
+    const shogo =
+      data.playing === 0
+        ? "先鋒"
+        : data.playing === 1
+        ? "次鋒"
+        : data.playing === 2
+        ? "中堅"
+        : data.playing === 3
+        ? "副将"
+        : "大将";
+    data.status = `${shogo} (${data.players.red[data.playing].name} vs ${
+      data.players.white[data.playing].name
+    })`;
   }
+
+  calcWinPoint();
 }
 
 function calcWinPoint() {
@@ -365,9 +402,13 @@ function calcWinPoint() {
     } else if (red > white) {
       winCount.red++;
       data.result.draw[i] = false;
-    } else {
+    } else if (i < data.playing) {
       data.result.draw[i] = true;
+    } else {
+      data.result.draw[i] = false;
     }
+
+    // alert(`i: ${i}, playing: ${data.playing}`);
 
     data.result.ippons.red = ipponCount.red;
     data.result.ippons.white = ipponCount.white;
@@ -408,6 +449,11 @@ function downloadImg() {
   line-height: 1.75rem;
   table-layout: fixed;
   border-collapse: collapse;
+  position: relative;
+}
+
+.scoreboard-parent {
+  position: relative;
 }
 
 td,
@@ -463,6 +509,37 @@ th {
   border: none;
   border-right: 1px solid #333;
   font-size: 1.7rem;
+}
+
+.drawmark-1,
+.drawmark-2,
+.drawmark-3,
+.drawmark-4,
+.drawmark-5 {
+  position: absolute;
+  top: 158px;
+  pointer-events: none;
+  font-size: 4rem;
+}
+
+.drawmark-1 {
+  left: 193px;
+}
+.drawmark-2 {
+  left: 276px;
+}
+.drawmark-3 {
+  left: 360px;
+}
+.drawmark-4 {
+  left: 445px;
+}
+.drawmark-5 {
+  left: 528px;
+}
+
+.nowplaying {
+  background: #b8f29b;
 }
 
 .v-row {
