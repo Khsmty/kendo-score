@@ -368,6 +368,9 @@ function changePlayer(type: "next" | "prev") {
       data.players.white[data.playing].name
     })`;
   }
+  
+  data.result.hansoku.red = data.score.red[data.playing].filter((r) => r === "▲").length % 2
+  data.result.hansoku.white = data.score.white[data.playing].filter((r) => r === "▲").length % 2
 
   calcWinPoint();
 }
