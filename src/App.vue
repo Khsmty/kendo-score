@@ -388,7 +388,7 @@ function calcWinPoint() {
 
     for (const team of ["red", "white"]) {
       const record = data.score[team as keyof (typeof data)["score"]][i];
-      const filtered = record.filter((r) => r !== "▲" && r !== "反");
+      const filtered = record.filter((r) => r !== "▲");
 
       team === "red" ? (red = filtered.length) : (white = filtered.length);
     }
@@ -407,8 +407,6 @@ function calcWinPoint() {
     } else {
       data.result.draw[i] = false;
     }
-
-    // alert(`i: ${i}, playing: ${data.playing}`);
 
     data.result.ippons.red = ipponCount.red;
     data.result.ippons.white = ipponCount.white;
