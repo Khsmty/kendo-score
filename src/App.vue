@@ -314,6 +314,16 @@ function ippon(
   if (type === "▲" && data.result.hansoku[team] === 1) {
     type = "反";
     data.result.hansoku[team] = 0;
+
+    if (team === "red") {
+      team = "white"
+
+      data.score.red[data.playing].splice(data.score.red[data.playing].indexOf("▲"), 1)
+    } else {
+      team = "red"
+      
+      data.score.white[data.playing].splice(data.score.white[data.playing].indexOf("▲"), 1)
+    }
   } else if (type === "▲") {
     data.result.hansoku[team] = 1;
   }
@@ -440,6 +450,7 @@ function downloadImg() {
 <style>
 * {
   font-family: "Noto Sans JP", sans-serif;
+  touch-action: manipulation;
 }
 
 .scoreboard {
