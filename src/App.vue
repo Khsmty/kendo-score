@@ -7,31 +7,31 @@
             <tr>
               <th class="header teamname">チーム名</th>
               <th
-                :class="'header ' + data.playing === 0 ? 'nowplaying' : ''"
+                :class="'header ' + (data.playing === 0 ? 'nowplaying' : '')"
                 colspan="2"
               >
                 先鋒
               </th>
               <th
-                :class="'header ' + data.playing === 1 ? 'nowplaying' : ''"
+                :class="'header ' + (data.playing === 1 ? 'nowplaying' : '')"
                 colspan="2"
               >
                 次鋒
               </th>
               <th
-                :class="'header ' + data.playing === 2 ? 'nowplaying' : ''"
+                :class="'header ' + (data.playing === 2 ? 'nowplaying' : '')"
                 colspan="2"
               >
                 中堅
               </th>
               <th
-                :class="'header ' + data.playing === 3 ? 'nowplaying' : ''"
+                :class="'header ' + (data.playing === 3 ? 'nowplaying' : '')"
                 colspan="2"
               >
                 副将
               </th>
               <th
-                :class="'header ' + data.playing === 4 ? 'nowplaying' : ''"
+                :class="'header ' + (data.playing === 4 ? 'nowplaying' : '')"
                 colspan="2"
               >
                 大将
