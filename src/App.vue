@@ -250,7 +250,7 @@ import { toJpeg } from "html-to-image";
 
 const scoreboard = ref();
 
-const data = reactive({
+const initData = {
   playing: -1,
   status: "まだ対戦開始していません",
   score: {
@@ -292,7 +292,8 @@ const data = reactive({
       { name: "", first: false },
     ],
   },
-});
+};
+const data = reactive(initData);
 
 const state = reactive({
   isPlayerNameDialogOpen: false,
@@ -316,15 +317,19 @@ function ippon(
     data.result.hansoku[team] = 0;
 
     if (team === "red") {
-      team = "white"
+      team = "white";
 
-      // @ts-ignore
-      data.score.red[data.playing].splice(data.score.red[data.playing].indexOf("▲"), 1)
+      data.score.red[data.playing].splice(
+        data.score.red[data.playing].indexOf("▲" as never),
+        1
+      );
     } else {
-      team = "red"
-      
-      // @ts-ignore
-      data.score.white[data.playing].splice(data.score.white[data.playing].indexOf("▲"), 1)
+      team = "red";
+
+      data.score.white[data.playing].splice(
+        data.score.white[data.playing].indexOf("▲" as never),
+        1
+      );
     }
   } else if (type === "▲") {
     data.result.hansoku[team] = 1;
@@ -380,9 +385,13 @@ function changePlayer(type: "next" | "prev") {
       data.players.white[data.playing].name
     })`;
   }
-  
-  data.result.hansoku.red = data.score.red[data.playing].filter((r) => r === "▲").length % 2
-  data.result.hansoku.white = data.score.white[data.playing].filter((r) => r === "▲").length % 2
+
+  if ([0, 1, 2, 3, 4].includes(data.playing)) {
+    data.result.hansoku.red =
+      data.score.red[data.playing].filter((r) => r === "▲").length % 2;
+    data.result.hansoku.white =
+      data.score.white[data.playing].filter((r) => r === "▲").length % 2;
+  }
 
   calcWinPoint();
 }
