@@ -318,10 +318,12 @@ function ippon(
     if (team === "red") {
       team = "white"
 
+      // @ts-ignore
       data.score.red[data.playing].splice(data.score.red[data.playing].indexOf("▲"), 1)
     } else {
       team = "red"
       
+      // @ts-ignore
       data.score.white[data.playing].splice(data.score.white[data.playing].indexOf("▲"), 1)
     }
   } else if (type === "▲") {
