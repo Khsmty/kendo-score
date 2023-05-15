@@ -146,11 +146,23 @@
             </tr>
           </tbody>
         </table>
-        <div v-if="data.result.draw[0]" class="drawmark-1">×</div>
-        <div v-if="data.result.draw[1]" class="drawmark-2">×</div>
-        <div v-if="data.result.draw[2]" class="drawmark-3">×</div>
-        <div v-if="data.result.draw[3]" class="drawmark-4">×</div>
-        <div v-if="data.result.draw[4]" class="drawmark-5">×</div>
+
+        <!-- 引き分けマーク -->
+        <div v-for="i in 5" :class="'drawmark-' + i">
+          <svg
+            v-if="data.result.draw[i - 1]"
+            xmlns="http://www.w3.org/2000/svg"
+            width="80"
+            height="80"
+            viewBox="0 0 24 24"
+            stroke="#000000"
+            stroke-width="1"
+            stroke-linecap="round"
+          >
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </div>
       </div>
     </v-col>
   </v-row>
@@ -540,25 +552,25 @@ th {
 .drawmark-4,
 .drawmark-5 {
   position: absolute;
-  top: 158px;
+  top: 170px;
   pointer-events: none;
   font-size: 4rem;
 }
 
 .drawmark-1 {
-  left: 193px;
+  left: 184px;
 }
 .drawmark-2 {
-  left: 276px;
+  left: 268px;
 }
 .drawmark-3 {
-  left: 360px;
+  left: 352px;
 }
 .drawmark-4 {
-  left: 445px;
+  left: 436px;
 }
 .drawmark-5 {
-  left: 528px;
+  left: 520px;
 }
 
 .nowplaying {
