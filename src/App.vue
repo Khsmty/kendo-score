@@ -147,6 +147,25 @@
           </tbody>
         </table>
 
+        <!-- 1本目マーク -->
+        <div v-for="i in 20" :class="'firstmark-' + i">
+          <svg
+            v-if="
+              data.players.red.some((player) => player.first === i) ||
+              data.players.white.some((player) => player.first === i)
+            "
+            xmlns="http://www.w3.org/2000/svg"
+            width="50"
+            height="50"
+            viewBox="0 0 24 24"
+            stroke="#000"
+            stroke-width="1"
+            fill="none"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+          </svg>
+        </div>
+
         <!-- 引き分けマーク -->
         <div v-for="i in 5" :class="'drawmark-' + i">
           <svg
@@ -155,7 +174,7 @@
             width="80"
             height="80"
             viewBox="0 0 24 24"
-            stroke="#000000"
+            stroke="#000"
             stroke-width="1"
             stroke-linecap="round"
           >
@@ -260,56 +279,11 @@
 import { ref, reactive } from "vue";
 import { toJpeg } from "html-to-image";
 
+// reactive
+import data from "./store/data";
+import state from "./store/state";
+
 const scoreboard = ref();
-
-const initData = {
-  playing: -1,
-  status: "まだ対戦開始していません",
-  score: {
-    red: [[], [], [], [], []],
-    white: [[], [], [], [], []],
-  },
-  result: {
-    ippons: {
-      red: 0,
-      white: 0,
-    },
-    wins: {
-      red: 0,
-      white: 0,
-    },
-    hansoku: {
-      red: 0,
-      white: 0,
-    },
-    draw: [false, false, false, false, false],
-  },
-  team: {
-    red: "",
-    white: "",
-  },
-  players: {
-    red: [
-      { name: "", first: false },
-      { name: "", first: false },
-      { name: "", first: false },
-      { name: "", first: false },
-      { name: "", first: false },
-    ],
-    white: [
-      { name: "", first: false },
-      { name: "", first: false },
-      { name: "", first: false },
-      { name: "", first: false },
-      { name: "", first: false },
-    ],
-  },
-};
-const data = reactive(initData);
-
-const state = reactive({
-  isPlayerNameDialogOpen: false,
-});
 
 const order = ["先鋒", "次鋒", "中堅", "副将", "大将"];
 
@@ -347,6 +321,19 @@ function ippon(
     data.result.hansoku[team] = 1;
   }
 
+  if (
+    type !== "▲" &&
+    (data.score.red[data.playing].length === 0 ||
+      (data.score.red[data.playing].length === 1 &&
+        data.score.red[data.playing].some((score) => score === "▲"))) &&
+    (data.score.white[data.playing].length === 0 ||
+      (data.score.white[data.playing].length === 1 &&
+        data.score.white[data.playing].some((score) => score === "▲")))
+  ) {
+    // TODO: 番号を対応させる
+    data.players[team][data.playing].first = 1;
+  }
+
   data.score[team][data.playing].push(type as never);
   calcWinPoint();
 }
@@ -359,7 +346,20 @@ function revert(team: "red" | "white") {
     alert("対戦が終了しています。[リセット] を押してください。");
   }
 
-  data.score[team][data.playing].pop();
+  const pop = data.score[team][data.playing].pop();
+  if (pop === "▲") {
+    data.result.hansoku[team] = 0;
+  }
+
+  /* 1本目を取り消した場合 */
+  if (
+    data.score[team][data.playing].length === 0 ||
+    (data.score[team][data.playing].length === 1 &&
+      data.score[team][data.playing].some((score) => score === "▲"))
+  ) {
+    data.players[team][data.playing].first = 0;
+  }
+
   calcWinPoint();
 }
 
@@ -469,115 +469,3 @@ function downloadImg() {
     });
 }
 </script>
-
-<style>
-* {
-  font-family: "Noto Sans JP", sans-serif;
-  touch-action: manipulation;
-}
-
-.scoreboard {
-  width: 750px;
-  height: 345px;
-  background: white;
-  font-size: 1.25rem;
-  line-height: 1.75rem;
-  table-layout: fixed;
-  border-collapse: collapse;
-  position: relative;
-}
-
-.scoreboard-parent {
-  position: relative;
-}
-
-td,
-th {
-  border: 1px solid #333;
-}
-
-.header {
-  height: 51px;
-}
-.teamname {
-  width: 170px;
-}
-.katiten,
-.katiten-cell {
-  width: 80px;
-}
-.katiten-cell {
-  font-size: 1.7rem;
-}
-.katiten-bar {
-  width: 70%;
-  margin: 3px 15%;
-  height: 2px;
-  background-color: #333;
-}
-.player {
-  height: 63px;
-}
-
-.red-team {
-  background: #ffeded;
-}
-.white-team {
-  background: #e9e9e9;
-}
-
-.score-cell {
-  width: 42px;
-  height: 42px;
-  border: none;
-  font-size: 1.7rem;
-}
-.rb {
-  border-right: 1px solid #333;
-}
-.bb {
-  border-bottom: 1px solid #333 !important;
-}
-.score-cell-end {
-  width: 80px;
-  height: 42px;
-  border: none;
-  border-right: 1px solid #333;
-  font-size: 1.7rem;
-}
-
-.drawmark-1,
-.drawmark-2,
-.drawmark-3,
-.drawmark-4,
-.drawmark-5 {
-  position: absolute;
-  top: 170px;
-  pointer-events: none;
-  font-size: 4rem;
-}
-
-.drawmark-1 {
-  left: 184px;
-}
-.drawmark-2 {
-  left: 268px;
-}
-.drawmark-3 {
-  left: 352px;
-}
-.drawmark-4 {
-  left: 436px;
-}
-.drawmark-5 {
-  left: 520px;
-}
-
-.nowplaying {
-  background: #b8f29b;
-}
-
-.v-row {
-  margin: 0 !important;
-}
-</style>

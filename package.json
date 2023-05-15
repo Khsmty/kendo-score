@@ -10,6 +10,7 @@
     "@mdi/font": "7.2.96",
     "html-to-image": "^1.11.11",
     "roboto-fontface": "*",
+    "sass": "^1.62.1",
     "vue": "^3.2.0",
     "vuetify": "^3.0.0",
     "webfontloader": "^1.0.0"

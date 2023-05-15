@@ -1,0 +1,180 @@
+* {
+  font-family: "Noto Sans JP", sans-serif;
+  touch-action: manipulation;
+}
+
+.scoreboard {
+  width: 750px;
+  height: 345px;
+  background: white;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  table-layout: fixed;
+  border-collapse: collapse;
+  position: relative;
+}
+
+.scoreboard-parent {
+  position: relative;
+}
+
+td,
+th {
+  border: 1px solid #333;
+}
+
+.header {
+  height: 51px;
+}
+.teamname {
+  width: 170px;
+}
+.katiten,
+.katiten-cell {
+  width: 80px;
+}
+.katiten-cell {
+  font-size: 1.7rem;
+}
+.katiten-bar {
+  width: 70%;
+  margin: 3px 15%;
+  height: 2px;
+  background-color: #333;
+}
+.player {
+  height: 63px;
+}
+
+.red-team {
+  background: #ffeded;
+}
+.white-team {
+  background: #e9e9e9;
+}
+
+.score-cell {
+  width: 42px;
+  height: 42px;
+  border: none;
+  font-size: 1.7rem;
+}
+.rb {
+  border-right: 1px solid #333;
+}
+.bb {
+  border-bottom: 1px solid #333 !important;
+}
+.score-cell-end {
+  width: 80px;
+  height: 42px;
+  border: none;
+  border-right: 1px solid #333;
+  font-size: 1.7rem;
+}
+
+/* 引き分けマーク */
+.drawmark-1,
+.drawmark-2,
+.drawmark-3,
+.drawmark-4,
+.drawmark-5 {
+  position: absolute;
+  top: 170px;
+  pointer-events: none;
+}
+
+.drawmark-1 {
+  left: 184px;
+}
+.drawmark-2 {
+  left: 268px;
+}
+.drawmark-3 {
+  left: 352px;
+}
+.drawmark-4 {
+  left: 436px;
+}
+.drawmark-5 {
+  left: 520px;
+}
+
+/* 1本目マーク */
+.firstmark-1,
+.firstmark-3,
+.firstmark-5,
+.firstmark-7,
+.firstmark-9,
+.firstmark-11,
+.firstmark-13,
+.firstmark-15,
+.firstmark-17,
+.firstmark-19 {
+  position: absolute;
+  top: 125px;
+  pointer-events: none;
+}
+.firstmark-2,
+.firstmark-4,
+.firstmark-6,
+.firstmark-8,
+.firstmark-10,
+.firstmark-12,
+.firstmark-14,
+.firstmark-16,
+.firstmark-18,
+.firstmark-20 {
+  position: absolute;
+  top: 210px;
+  pointer-events: none;
+}
+
+.firstmark-1,
+.firstmark-2 {
+  left: 180px;
+}
+.firstmark-3,
+.firstmark-4 {
+  left: 218px;
+}
+.firstmark-5,
+.firstmark-6 {
+  left: 264px;
+}
+.firstmark-7,
+.firstmark-8 {
+  left: 302px;
+}
+.firstmark-9,
+.firstmark-10 {
+  left: 348px;
+}
+.firstmark-11,
+.firstmark-12 {
+  left: 386px;
+}
+.firstmark-13,
+.firstmark-14 {
+  left: 432px;
+}
+.firstmark-15,
+.firstmark-16 {
+  left: 469px;
+}
+.firstmark-17,
+.firstmark-18 {
+  left: 516px;
+}
+.firstmark-19,
+.firstmark-20 {
+  left: 553px;
+}
+
+.nowplaying {
+  background: #b8f29b;
+}
+
+.v-row {
+  margin: 0 !important;
+}
