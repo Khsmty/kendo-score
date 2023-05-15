@@ -330,8 +330,20 @@ function ippon(
       (data.score.white[data.playing].length === 1 &&
         data.score.white[data.playing].some((score) => score === "▲")))
   ) {
-    // TODO: 番号を対応させる
-    data.players[team][data.playing].first = 1;
+    const numbers = [
+      [1, 3, 2, 4],
+      [5, 7, 6, 8],
+      [9, 11, 10, 12],
+      [13, 15, 14, 16],
+      [17, 19, 18, 20],
+    ];
+    let i = team === "red" ? 0 : 2;
+
+    if (data.score[team][data.playing].length === 1) {
+      i++;
+    }
+
+    data.players[team][data.playing].first = numbers[data.playing][i];
   }
 
   data.score[team][data.playing].push(type as never);
