@@ -276,11 +276,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from "vue";
+import { ref, toRefs } from "vue";
 import { toJpeg } from "html-to-image";
 
 // reactive
-import data from "./store/data";
+import data, { initData } from "./store/data";
 import state from "./store/state";
 
 const scoreboard = ref();
@@ -296,6 +296,12 @@ function ippon(
     return;
   } else if (data.playing === 6) {
     alert("対戦が終了しています。[リセット] を押してください。");
+    return;
+  }
+
+  if (data.score[team][data.playing].length >= 4) {
+    alert("上限に達しました。[次選手へ] を押してください。");
+    return;
   }
 
   if (type === "▲" && data.result.hansoku[team] === 1) {
@@ -464,7 +470,9 @@ function calcWinPoint() {
 }
 
 function reset() {
-  alert("未実装です。再読み込みで代用してください。");
+  if (confirm("本当にリセットしますか？")) {
+    location.reload();
+  }
 }
 
 function downloadImg() {
