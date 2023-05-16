@@ -307,7 +307,6 @@
     </v-col>
     <v-col class="text-center">
       <p>現在: {{ data.status }}</p>
-      {{ data.playing }}
     </v-col>
   </v-row>
 </template>
