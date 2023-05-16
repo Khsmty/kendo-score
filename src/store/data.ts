@@ -4,8 +4,8 @@ const initData = {
   playing: -1,
   status: "まだ対戦開始していません",
   score: {
-    red: [[], [], [], [], []],
-    white: [[], [], [], [], []],
+    red: [[], [], [], [], [], []],
+    white: [[], [], [], [], [], []],
   },
   result: {
     ippons: {
@@ -20,7 +20,7 @@ const initData = {
       red: 0,
       white: 0,
     },
-    draw: [false, false, false, false, false],
+    draw: [false, false, false, false, false, false],
   },
   team: {
     red: "",
@@ -33,6 +33,7 @@ const initData = {
       { name: "", first: 0 },
       { name: "", first: 0 },
       { name: "", first: 0 },
+      { name: "" },
     ],
     white: [
       { name: "", first: 0 },
@@ -40,6 +41,7 @@ const initData = {
       { name: "", first: 0 },
       { name: "", first: 0 },
       { name: "", first: 0 },
+      { name: "" },
     ],
   },
 };

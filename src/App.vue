@@ -37,7 +37,12 @@
                 大将
               </th>
               <th class="katiten" rowspan="2">勝点</th>
-              <th class="header" style="width: 80px">代表戦</th>
+              <th
+                :class="'header ' + (data.playing === 5 ? 'nowplaying' : '')"
+                style="width: 80px"
+              >
+                代表戦
+              </th>
             </tr>
             <tr>
               <td class="teamname red-team" rowspan="3" style="height: 147px">
@@ -58,7 +63,7 @@
               <td class="player red-team" colspan="2">
                 {{ data.players.red[4].name }}
               </td>
-              <td class="player red-team">-</td>
+              <td class="player red-team">{{ data.players.red[5].name }}</td>
             </tr>
             <tr>
               <td class="score-cell">{{ data.score.red[0][0] }}</td>
@@ -76,7 +81,7 @@
                 <div class="katiten-bar" />
                 <span>{{ data.result.wins.red }}</span>
               </td>
-              <td class="score-cell-end">-</td>
+              <td class="score-cell-end">{{ data.score.red[5][0] }}</td>
             </tr>
             <tr>
               <td class="score-cell bb">{{ data.score.red[0][2] }}</td>
@@ -89,7 +94,7 @@
               <td class="score-cell bb rb">{{ data.score.red[3][3] }}</td>
               <td class="score-cell bb">{{ data.score.red[4][2] }}</td>
               <td class="score-cell bb rb">{{ data.score.red[4][3] }}</td>
-              <td class="score-cell-end bb"></td>
+              <td class="score-cell-end bb">{{ data.score.red[5][1] }}</td>
             </tr>
             <tr>
               <td class="teamname white-team" rowspan="3" style="height: 147px">
@@ -110,7 +115,7 @@
                 <div class="katiten-bar" />
                 <span>{{ data.result.wins.white }}</span>
               </td>
-              <td class="score-cell-end">-</td>
+              <td class="score-cell-end">{{ data.score.white[5][0] }}</td>
             </tr>
             <tr>
               <td class="score-cell bb">{{ data.score.white[0][2] }}</td>
@@ -123,7 +128,7 @@
               <td class="score-cell bb rb">{{ data.score.white[3][3] }}</td>
               <td class="score-cell bb">{{ data.score.white[4][2] }}</td>
               <td class="score-cell bb rb">{{ data.score.white[4][3] }}</td>
-              <td class="score-cell-end"></td>
+              <td class="score-cell-end">{{ data.score.white[5][1] }}</td>
             </tr>
             <tr>
               <td class="player white-team" colspan="2">
@@ -142,7 +147,9 @@
                 {{ data.players.white[4].name }}
               </td>
               <td></td>
-              <td class="player white-team">-</td>
+              <td class="player white-team">
+                {{ data.players.white[5].name }}
+              </td>
             </tr>
           </tbody>
         </table>
@@ -204,7 +211,7 @@
                   base-color="error"
                   color="error"
                   :hide-details="true"
-                ></v-text-field>
+                />
               </v-col>
               <v-col cols="2" class="text-center">
                 <p>チーム名</p>
@@ -216,13 +223,13 @@
                   base-color="grey"
                   color="grey"
                   :hide-details="true"
-                ></v-text-field>
+                />
               </v-col>
             </v-row>
 
             <v-divider class="my-2" />
 
-            <v-row v-for="i in 5" :key="i" align="center">
+            <v-row v-for="i in 6" :key="i" align="center">
               <v-col cols="5">
                 <v-text-field
                   v-model="data.players.red[i - 1].name"
@@ -230,7 +237,7 @@
                   base-color="error"
                   color="error"
                   :hide-details="true"
-                ></v-text-field>
+                />
               </v-col>
               <v-col cols="2" class="text-center">
                 <p>{{ order[i - 1] }}</p>
@@ -242,7 +249,7 @@
                   base-color="grey"
                   color="grey"
                   :hide-details="true"
-                ></v-text-field>
+                />
               </v-col>
             </v-row>
           </v-card-text>
@@ -300,6 +307,7 @@
     </v-col>
     <v-col class="text-center">
       <p>現在: {{ data.status }}</p>
+      {{ data.playing }}
     </v-col>
   </v-row>
 </template>
@@ -314,7 +322,7 @@ import state from "./store/state";
 
 const scoreboard = ref();
 
-const order = ["先鋒", "次鋒", "中堅", "副将", "大将"];
+const order = ["先鋒", "次鋒", "中堅", "副将", "大将", "代表戦"];
 
 function ippon(
   type: "コ" | "ツ" | "ド" | "メ" | "▲" | "反" | "○",
@@ -357,6 +365,7 @@ function ippon(
   }
 
   if (
+    data.playing !== 5 &&
     type !== "▲" &&
     type !== "○" &&
     (data.score.red[data.playing].length === 0 ||
@@ -416,14 +425,31 @@ function revert(team: "red" | "white") {
 }
 
 function changePlayer(type: "next" | "prev") {
-  if (type === "next" && data.playing === 4) {
+  if (
+    type === "next" &&
+    data.playing === 4 &&
+    (data.result.wins.red !== data.result.wins.white ||
+      (data.result.wins.red === data.result.wins.white &&
+        data.result.ippons.red !== data.result.ippons.white))
+  ) {
+    data.playing = 6;
+    data.status = "対戦が終了しました";
+  } else if (type === "next" && data.playing === 5) {
     data.playing = 6;
     data.status = "対戦が終了しました";
   } else if (type === "prev" && data.playing === -1) {
     return;
   } else if (type === "next" && data.playing === 6) {
     return;
-  } else if (type === "prev" && data.playing === 6) {
+  } else if (
+    type === "prev" &&
+    data.playing === 6 &&
+    data.score.red[5].length === 0 &&
+    data.score.white[5].length === 0 &&
+    (data.result.wins.red !== data.result.wins.white ||
+      (data.result.wins.red === data.result.wins.white &&
+        data.result.ippons.red !== data.result.ippons.white))
+  ) {
     data.playing = 4;
   } else if (type === "prev" && data.playing === 0) {
     data.playing = -1;
@@ -444,13 +470,15 @@ function changePlayer(type: "next" | "prev") {
         ? "中堅"
         : data.playing === 3
         ? "副将"
-        : "大将";
+        : data.playing === 4
+        ? "大将"
+        : "代表戦";
     data.status = `${shogo} (${data.players.red[data.playing].name} vs ${
       data.players.white[data.playing].name
     })`;
   }
 
-  if ([0, 1, 2, 3, 4].includes(data.playing)) {
+  if ([0, 1, 2, 3, 4, 5].includes(data.playing)) {
     data.result.hansoku.red =
       data.score.red[data.playing].filter((r) => r === "▲").length % 2;
     data.result.hansoku.white =
@@ -470,7 +498,7 @@ function calcWinPoint() {
     white: 0,
   };
 
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i <= 5; i++) {
     let red = 0;
     let white = 0;
 
