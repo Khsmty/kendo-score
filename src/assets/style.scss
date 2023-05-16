@@ -13,7 +13,6 @@
   border-collapse: collapse;
   position: relative;
 }
-
 .scoreboard-parent {
   position: relative;
 }
@@ -28,6 +27,7 @@ th {
 }
 .teamname {
   width: 170px;
+  word-wrap: break-word;
 }
 .katiten,
 .katiten-cell {
