@@ -185,21 +185,25 @@
       </div>
     </v-col>
   </v-row>
+
   <v-row justify="center" align="center">
     <v-col cols="12" class="text-center mb-5">
-      <v-dialog v-model="state.isPlayerNameDialogOpen" width="500">
+      <!-- 選手名入力 -->
+      <v-dialog v-model="state.isPlayerNameDialogOpen" width="600">
         <template v-slot:activator="{ props }">
           <v-btn class="mr-2" color="primary" v-bind="props">選手名入力</v-btn>
         </template>
 
         <v-card>
           <v-card-text>
-            <v-row>
+            <v-row align="center">
               <v-col cols="5">
                 <v-text-field
                   v-model="data.team.red"
                   variant="outlined"
-                  bg-color="error"
+                  base-color="error"
+                  color="error"
+                  :hide-details="true"
                 ></v-text-field>
               </v-col>
               <v-col cols="2" class="text-center">
@@ -209,16 +213,23 @@
                 <v-text-field
                   v-model="data.team.white"
                   variant="outlined"
-                  bg-color="grey"
+                  base-color="grey"
+                  color="grey"
+                  :hide-details="true"
                 ></v-text-field>
               </v-col>
             </v-row>
-            <v-row v-for="i in 5" :key="i">
+
+            <v-divider class="my-2" />
+
+            <v-row v-for="i in 5" :key="i" align="center">
               <v-col cols="5">
                 <v-text-field
                   v-model="data.players.red[i - 1].name"
                   variant="outlined"
-                  bg-color="error"
+                  base-color="error"
+                  color="error"
+                  :hide-details="true"
                 ></v-text-field>
               </v-col>
               <v-col cols="2" class="text-center">
@@ -228,14 +239,18 @@
                 <v-text-field
                   v-model="data.players.white[i - 1].name"
                   variant="outlined"
-                  bg-color="grey"
+                  base-color="grey"
+                  color="grey"
+                  :hide-details="true"
                 ></v-text-field>
               </v-col>
             </v-row>
           </v-card-text>
+
           <v-card-actions>
             <v-btn
               color="primary"
+              variant="tonal"
               block
               @click="state.isPlayerNameDialogOpen = false"
             >
@@ -244,15 +259,23 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+
+      <!-- 操作ボタン -->
       <v-btn class="mr-2" color="warning" @click="reset">リセット</v-btn>
       <v-btn color="info" @click="downloadImg">ダウンロード</v-btn>
     </v-col>
+
+    <!-- 1本ボタン -->
     <v-col cols="6" class="text-right">
       <v-btn class="mr-2" color="error" @click="ippon('コ', 'red')">コ</v-btn>
       <v-btn class="mr-2" color="error" @click="ippon('ツ', 'red')">ツ</v-btn>
       <v-btn class="mr-2" color="error" @click="ippon('ド', 'red')">ド</v-btn>
       <v-btn class="mr-2" color="error" @click="ippon('メ', 'red')">メ</v-btn>
-      <v-btn class="mr-2" color="error" @click="ippon('▲', 'red')">▲</v-btn>
+      <v-btn color="error" @click="ippon('▲', 'red')">▲</v-btn>
+      <div class="d-block mt-2" />
+      <v-btn class="mr-2" color="error" @click="ippon('○', 'red')">
+        不戦勝
+      </v-btn>
       <v-btn color="error" @click="revert('red')">取消</v-btn>
     </v-col>
     <v-col cols="6" class="text-left">
@@ -260,9 +283,15 @@
       <v-btn class="mr-2" color="grey" @click="ippon('ツ', 'white')">ツ</v-btn>
       <v-btn class="mr-2" color="grey" @click="ippon('ド', 'white')">ド</v-btn>
       <v-btn class="mr-2" color="grey" @click="ippon('メ', 'white')">メ</v-btn>
-      <v-btn class="mr-2" color="grey" @click="ippon('▲', 'white')">▲</v-btn>
+      <v-btn color="grey" @click="ippon('▲', 'white')">▲</v-btn>
+      <div class="d-block mt-2" />
+      <v-btn class="mr-2" color="grey" @click="ippon('○', 'white')">
+        不戦勝
+      </v-btn>
       <v-btn color="grey" @click="revert('white')">取消</v-btn>
     </v-col>
+
+    <!-- 選手ボタン -->
     <v-col cols="12" class="text-center">
       <v-btn class="mr-2" color="secondary" @click="changePlayer('prev')">
         前選手へ
@@ -276,11 +305,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, toRefs } from "vue";
+import { ref } from "vue";
 import { toJpeg } from "html-to-image";
 
 // reactive
-import data, { initData } from "./store/data";
+import data from "./store/data";
 import state from "./store/state";
 
 const scoreboard = ref();
@@ -288,7 +317,7 @@ const scoreboard = ref();
 const order = ["先鋒", "次鋒", "中堅", "副将", "大将"];
 
 function ippon(
-  type: "コ" | "ツ" | "ド" | "メ" | "▲" | "反",
+  type: "コ" | "ツ" | "ド" | "メ" | "▲" | "反" | "○",
   team: "red" | "white"
 ) {
   if (data.playing === -1) {
@@ -329,6 +358,7 @@ function ippon(
 
   if (
     type !== "▲" &&
+    type !== "○" &&
     (data.score.red[data.playing].length === 0 ||
       (data.score.red[data.playing].length === 1 &&
         data.score.red[data.playing].some((score) => score === "▲"))) &&
@@ -350,6 +380,10 @@ function ippon(
     }
 
     data.players[team][data.playing].first = numbers[data.playing][i];
+  }
+
+  if (type === "○") {
+    data.score[team][data.playing].push("○" as never);
   }
 
   data.score[team][data.playing].push(type as never);

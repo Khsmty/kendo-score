@@ -1,6 +1,6 @@
 import { reactive } from "vue";
 
-export const initData = {
+const initData = {
   playing: -1,
   status: "まだ対戦開始していません",
   score: {
