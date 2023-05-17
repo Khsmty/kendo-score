@@ -308,7 +308,18 @@
       <v-btn color="secondary" @click="changePlayer('next')">次選手へ</v-btn>
     </v-col>
     <v-col class="text-center">
-      <p>現在: {{ data.status }}</p>
+      <p>
+        現在:&nbsp;
+        <span v-if="[0, 1, 2, 3, 4, 5].includes(data.playing)">
+          {{ order[data.playing] }}&nbsp; ({{
+            data.players.red[data.playing].name
+          }}
+          &nbsp;vs&nbsp;
+          {{ data.players.white[data.playing].name }})
+        </span>
+        <span v-else-if="data.playing === -1">対戦が開始されていません</span>
+        <span v-else-if="data.playing === 6">対戦が終了しました</span>
+      </p>
     </v-col>
   </v-row>
 </template>
@@ -434,10 +445,8 @@ function changePlayer(type: "next" | "prev") {
         data.result.ippons.red !== data.result.ippons.white))
   ) {
     data.playing = 6;
-    data.status = "対戦が終了しました";
   } else if (type === "next" && data.playing === 5) {
     data.playing = 6;
-    data.status = "対戦が終了しました";
   } else if (type === "prev" && data.playing === -1) {
     return;
   } else if (type === "next" && data.playing === 6) {
@@ -454,29 +463,10 @@ function changePlayer(type: "next" | "prev") {
     data.playing = 4;
   } else if (type === "prev" && data.playing === 0) {
     data.playing = -1;
-    data.status = "まだ対戦開始していません";
-  } else {
-    if (type === "next") {
-      data.playing++;
-    } else if (type === "prev") {
-      data.playing--;
-    }
-
-    const shogo =
-      data.playing === 0
-        ? "先鋒"
-        : data.playing === 1
-        ? "次鋒"
-        : data.playing === 2
-        ? "中堅"
-        : data.playing === 3
-        ? "副将"
-        : data.playing === 4
-        ? "大将"
-        : "代表戦";
-    data.status = `${shogo} (${data.players.red[data.playing].name} vs ${
-      data.players.white[data.playing].name
-    })`;
+  } else if (type === "next") {
+    data.playing++;
+  } else if (type === "prev") {
+    data.playing--;
   }
 
   if ([0, 1, 2, 3, 4, 5].includes(data.playing)) {
