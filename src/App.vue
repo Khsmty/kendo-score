@@ -5,7 +5,7 @@
         <table class="scoreboard text-center">
           <tbody>
             <tr>
-              <th class="header teamname">チーム名</th>
+              <th class="header teamname lb">チーム名</th>
               <th
                 :class="'header ' + (data.playing === 0 ? 'nowplaying' : '')"
                 colspan="2"
@@ -128,7 +128,9 @@
               <td class="score-cell bb rb">{{ data.score.white[3][3] }}</td>
               <td class="score-cell bb">{{ data.score.white[4][2] }}</td>
               <td class="score-cell bb rb">{{ data.score.white[4][3] }}</td>
-              <td class="score-cell-end">{{ data.score.white[5][1] }}</td>
+              <td class="score-cell-end" style="border-bottom: 1px solid #333">
+                {{ data.score.white[5][1] }}
+              </td>
             </tr>
             <tr>
               <td class="player white-team" colspan="2">
@@ -146,7 +148,7 @@
               <td class="player white-team" colspan="2">
                 {{ data.players.white[4].name }}
               </td>
-              <td></td>
+              <td style="border-top: none; border-left: none"></td>
               <td class="player white-team">
                 {{ data.players.white[5].name }}
               </td>
@@ -313,7 +315,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { toJpeg } from "html-to-image";
+import html2canvas from "html2canvas";
 
 // reactive
 import data from "./store/data";
@@ -537,11 +539,11 @@ function reset() {
 }
 
 function downloadImg() {
-  toJpeg(scoreboard.value, { backgroundColor: "white" })
-    .then((dataUrl) => {
+  html2canvas(scoreboard.value)
+    .then((canvas) => {
       var link = document.createElement("a");
       link.download = "scoreboard.jpeg";
-      link.href = dataUrl;
+      link.href = canvas.toDataURL("image/jpeg");
       link.click();
     })
     .catch((err) => {

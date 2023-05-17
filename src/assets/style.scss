@@ -24,14 +24,22 @@ th {
 
 .header {
   height: 51px;
+  border-top: 1px solid #333 !important;
+  border-left: none;
 }
 .teamname {
   width: 170px;
   word-wrap: break-word;
+  border-top: none;
 }
 .katiten,
 .katiten-cell {
   width: 80px;
+  border-top: none;
+  border-left: none;
+}
+.katiten {
+  border-top: 1px solid #333;
 }
 .katiten-cell {
   font-size: 1.7rem;
@@ -44,6 +52,8 @@ th {
 }
 .player {
   height: 63px;
+  border-left: none;
+  border-top: none;
 }
 
 .red-team {
@@ -61,6 +71,12 @@ th {
 }
 .rb {
   border-right: 1px solid #333;
+}
+.lb {
+  border-left: 1px solid #333;
+}
+.tb {
+  border-top: 1px solid #333;
 }
 .bb {
   border-bottom: 1px solid #333 !important;
