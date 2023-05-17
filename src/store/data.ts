@@ -2,7 +2,6 @@ import { reactive } from "vue";
 
 const initData = {
   playing: -1,
-  status: "まだ対戦開始していません",
   score: {
     red: [[], [], [], [], [], []],
     white: [[], [], [], [], [], []],
