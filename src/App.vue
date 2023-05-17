@@ -534,6 +534,11 @@ function reset() {
 }
 
 function downloadImg() {
+  if (data.playing !== 6) {
+    alert("試合が進行中です。[次選手へ] を押して終了させてください。");
+    return;
+  }
+
   html2canvas(scoreboard.value)
     .then((canvas) => {
       var link = document.createElement("a");
