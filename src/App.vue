@@ -357,6 +357,11 @@ function ippon(
     type = "反";
     data.result.hansoku[team] = 0;
 
+    // 1本目が▲だった場合は、first を移動
+    if (data.playing !== 5 && data.score[team][data.playing][0] === "▲" && data.players[team][data.playing].first !== 0) {
+      data.players[team][data.playing].first! -= 2;
+    }
+
     if (team === "red") {
       team = "white";
 
