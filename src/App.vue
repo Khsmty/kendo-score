@@ -446,12 +446,15 @@ function revert(team: "red" | "white") {
 }
 
 function changePlayer(type: "next" | "prev") {
+  // 勝数と一本数が同じときは、代表戦へ
   if (
     type === "next" &&
     data.playing === 4 &&
     (data.result.wins.red !== data.result.wins.white ||
       (data.result.wins.red === data.result.wins.white &&
-        data.result.ippons.red !== data.result.ippons.white))
+        data.result.ippons.red !== data.result.ippons.white)) &&
+    data.score.red[5].length === 0 &&
+    data.score.white[5].length === 0
   ) {
     data.playing = 6;
   } else if (type === "next" && data.playing === 5) {
