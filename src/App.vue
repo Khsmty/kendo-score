@@ -7,38 +7,38 @@
             <tr>
               <th class="header teamname lb">チーム名</th>
               <th
-                :class="'header ' + (data.playing === 0 ? 'nowplaying' : '')"
+                :class="'header' + (data.playing === 0 ? ' nowplaying' : '')"
                 colspan="2"
               >
                 先鋒
               </th>
               <th
-                :class="'header ' + (data.playing === 1 ? 'nowplaying' : '')"
+                :class="'header' + (data.playing === 1 ? ' nowplaying' : '')"
                 colspan="2"
               >
                 次鋒
               </th>
               <th
-                :class="'header ' + (data.playing === 2 ? 'nowplaying' : '')"
+                :class="'header' + (data.playing === 2 ? ' nowplaying' : '')"
                 colspan="2"
               >
                 中堅
               </th>
               <th
-                :class="'header ' + (data.playing === 3 ? 'nowplaying' : '')"
+                :class="'header' + (data.playing === 3 ? ' nowplaying' : '')"
                 colspan="2"
               >
                 副将
               </th>
               <th
-                :class="'header ' + (data.playing === 4 ? 'nowplaying' : '')"
+                :class="'header' + (data.playing === 4 ? ' nowplaying' : '')"
                 colspan="2"
               >
                 大将
               </th>
               <th class="katiten" rowspan="2">勝点</th>
               <th
-                :class="'header ' + (data.playing === 5 ? 'nowplaying' : '')"
+                :class="'header' + (data.playing === 5 ? ' nowplaying' : '')"
                 style="width: 80px"
               >
                 代表戦
@@ -539,7 +539,7 @@ function reset() {
 
 function downloadImg() {
   if (data.playing !== 6) {
-    alert("試合が進行中です。[次選手へ] を押して終了させてください。");
+    alert("対戦が進行中です。[次選手へ] を押して終了させてください。");
     return;
   }
 
