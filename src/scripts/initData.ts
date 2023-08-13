@@ -13,11 +13,13 @@ export const initSettingsData: SettingsData = {
 type PlayersData = {
   red: {
     name: string;
-    players: { name: string; first: number }[];
+    players: { name: string; first: boolean }[];
+    daihyo: { name: string; first: boolean };
   };
   white: {
     name: string;
-    players: { name: string; first: number }[];
+    players: { name: string; first: boolean }[];
+    daihyo: { name: string; first: boolean };
   };
 };
 
@@ -25,10 +27,12 @@ export const initPlayersData: PlayersData = {
   red: {
     name: '',
     players: [],
+    daihyo: { name: '', first: false },
   },
   white: {
     name: '',
     players: [],
+    daihyo: { name: '', first: false },
   },
 };
 
@@ -42,19 +46,26 @@ type ScoreData = {
     red: boolean[];
     white: boolean[];
   };
-  result: {
-    ippons: {
-      red: number;
-      white: number;
+  daihyo: {
+    score: {
+      red: string;
+      white: string;
     };
-    wins: {
-      red: number;
-      white: number;
+    hansoku: {
+      red: boolean;
+      white: boolean;
     };
-
-    draw: boolean[];
-    winner: string;
   };
+  ippons: {
+    red: number;
+    white: number;
+  };
+  wins: {
+    red: number;
+    white: number;
+  };
+  draw: boolean[];
+  winner: 'red' | 'white' | '';
 };
 
 export const initScoreData: ScoreData = {
@@ -67,16 +78,24 @@ export const initScoreData: ScoreData = {
     red: [],
     white: [],
   },
-  result: {
-    ippons: {
-      red: 0,
-      white: 0,
+  daihyo: {
+    score: {
+      red: '',
+      white: '',
     },
-    wins: {
-      red: 0,
-      white: 0,
+    hansoku: {
+      red: false,
+      white: false,
     },
-    draw: [],
-    winner: '',
   },
+  ippons: {
+    red: 0,
+    white: 0,
+  },
+  wins: {
+    red: 0,
+    white: 0,
+  },
+  draw: [],
+  winner: '',
 };
