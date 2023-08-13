@@ -44,6 +44,233 @@ function App() {
     window.message_dialog.showModal();
   }
 
+  function ippon(
+    type: 'コ' | 'ツ' | 'ド' | 'メ' | '▲' | '反' | '○',
+    team: 'red' | 'white',
+  ) {
+    if (scoreData.playing === -1) {
+      openMessageDialog(
+        'error',
+        '対戦が開始されていません。[次選手へ] を押してください。',
+      );
+      return;
+    } else if (scoreData.playing === 6) {
+      openMessageDialog(
+        'error',
+        '対戦が終了しています。[リセット] を押してください。',
+      );
+      return;
+    }
+
+    if (scoreData.score[team][scoreData.playing].length >= 4) {
+      openMessageDialog(
+        'error',
+        '上限に達しました。[次選手へ] を押してください。',
+      );
+      return;
+    }
+
+    if (type === '▲' && scoreData.hansoku[team][scoreData.playing]) {
+      type = '反';
+      scoreData.hansoku[team][scoreData.playing] = false;
+
+      // 1本目が▲だった場合は、first を移動
+      if (
+        scoreData.playing !== 5 &&
+        scoreData.score[team][scoreData.playing][0] === '▲' &&
+        playersData[team].players[scoreData.playing].first !== 0
+      ) {
+        playersData[team].players[scoreData.playing].first! -= 2;
+      }
+
+      if (team === 'red') {
+        team = 'white';
+
+        scoreData.score.red[scoreData.playing].splice(
+          scoreData.score.red[scoreData.playing].indexOf('▲' as never),
+          1,
+        );
+      } else {
+        team = 'red';
+
+        scoreData.score.white[scoreData.playing].splice(
+          scoreData.score.white[scoreData.playing].indexOf('▲' as never),
+          1,
+        );
+      }
+    } else if (type === '▲') {
+      scoreData.hansoku[team][scoreData.playing] = true;
+    }
+
+    if (
+      scoreData.playing !== 5 &&
+      type !== '▲' &&
+      type !== '○' &&
+      (scoreData.score.red[scoreData.playing].length === 0 ||
+        (scoreData.score.red[scoreData.playing].length === 1 &&
+          scoreData.score.red[scoreData.playing].some(
+            (score) => score === '▲',
+          ))) &&
+      (scoreData.score.white[scoreData.playing].length === 0 ||
+        (scoreData.score.white[scoreData.playing].length === 1 &&
+          scoreData.score.white[scoreData.playing].some(
+            (score) => score === '▲',
+          )))
+    ) {
+      const numbers = [
+        [1, 3, 2, 4],
+        [5, 7, 6, 8],
+        [9, 11, 10, 12],
+        [13, 15, 14, 16],
+        [17, 19, 18, 20],
+      ];
+      let i = team === 'red' ? 0 : 2;
+
+      if (scoreData.score[team][scoreData.playing].length === 1) {
+        i++;
+      }
+
+      playersData[team].players[scoreData.playing].first =
+        numbers[scoreData.playing][i];
+    }
+
+    if (type === '○') {
+      scoreData.score[team][scoreData.playing].push('○' as never);
+    }
+
+    scoreData.score[team][scoreData.playing].push(type as never);
+    calcWinPoint();
+  }
+
+  function revert(team: 'red' | 'white') {
+    if (scoreData.playing === -1) {
+      alert('対戦が開始されていません。[次選手へ] を押してください。');
+      return;
+    } else if (scoreData.playing === 6) {
+      alert('対戦が終了しています。[リセット] を押してください。');
+    }
+
+    scoreData.score[team][scoreData.playing].pop();
+
+    /* 1本目を取り消した場合 */
+    if (
+      scoreData.score[team][scoreData.playing].length === 0 ||
+      (scoreData.score[team][scoreData.playing].length === 1 &&
+        scoreData.score[team][scoreData.playing].some((score) => score === '▲'))
+    ) {
+      playersData[team].players[scoreData.playing].first = 0;
+    }
+
+    calcWinPoint();
+  }
+
+  function changePlayer(type: 'next' | 'prev') {
+    // 勝数と一本数が同じときは、代表戦へ
+    if (
+      type === 'next' &&
+      scoreData.playing === 4 &&
+      (scoreData.result.wins.red !== scoreData.result.wins.white ||
+        (scoreData.result.wins.red === scoreData.result.wins.white &&
+          scoreData.result.ippons.red !== scoreData.result.ippons.white)) &&
+      scoreData.score.red[5].length === 0 &&
+      scoreData.score.white[5].length === 0
+    ) {
+      scoreData.playing = 6;
+    } else if (type === 'next' && scoreData.playing === 5) {
+      scoreData.playing = 6;
+    } else if (type === 'prev' && scoreData.playing === -1) {
+      return;
+    } else if (type === 'next' && scoreData.playing === 6) {
+      return;
+    } else if (
+      type === 'prev' &&
+      scoreData.playing === 6 &&
+      scoreData.score.red[5].length === 0 &&
+      scoreData.score.white[5].length === 0 &&
+      (scoreData.result.wins.red !== scoreData.result.wins.white ||
+        (scoreData.result.wins.red === scoreData.result.wins.white &&
+          scoreData.result.ippons.red !== scoreData.result.ippons.white))
+    ) {
+      scoreData.playing = 4;
+    } else if (type === 'prev' && scoreData.playing === 0) {
+      scoreData.playing = -1;
+    } else if (type === 'next') {
+      scoreData.playing++;
+    } else if (type === 'prev') {
+      scoreData.playing--;
+    }
+
+    // scoreData.score, scoreData.hansoku がなければ作成
+    if (scoreData.playing !== -1 && scoreData.playing !== 100) {
+      if (!scoreData.score.red[scoreData.playing]) {
+        scoreData.score.red[scoreData.playing] = [];
+      }
+      if (!scoreData.score.white[scoreData.playing]) {
+        scoreData.score.white[scoreData.playing] = [];
+      }
+      if (!scoreData.hansoku.red[scoreData.playing]) {
+        scoreData.hansoku.red[scoreData.playing] = false;
+      }
+      if (!scoreData.hansoku.white[scoreData.playing]) {
+        scoreData.hansoku.white[scoreData.playing] = false;
+      }
+    }
+
+    // player が入力されていなければ作成
+    if (scoreData.playing !== -1 && scoreData.playing !== 100) {
+      if (!playersData.red.players[scoreData.playing]) {
+        playersData.red.players[scoreData.playing] = {
+          name: '',
+          first: 0,
+        };
+      }
+      if (!playersData.white.players[scoreData.playing]) {
+        playersData.white.players[scoreData.playing] = {
+          name: '',
+          first: 0,
+        };
+      }
+    }
+
+    calcWinPoint();
+  }
+
+  function calcWinPoint() {
+    const ipponCount = {
+      red: 0,
+      white: 0,
+    };
+    const winCount = {
+      red: 0,
+      white: 0,
+    };
+
+    for (let i = 0; i <= 5; i++) {
+      const red = scoreData.score['red'][i]?.length || 0;
+      const white = scoreData.score['white'][i]?.length || 0;
+
+      ipponCount.red += red;
+      ipponCount.white += white;
+
+      if (red < white) {
+        winCount.white++;
+        scoreData.result.draw[i] = false;
+      } else if (red > white) {
+        winCount.red++;
+        scoreData.result.draw[i] = false;
+      } else if (i < scoreData.playing) {
+        scoreData.result.draw[i] = true;
+      } else {
+        scoreData.result.draw[i] = false;
+      }
+
+      scoreData.result.ippons.red = ipponCount.red;
+      scoreData.result.ippons.white = ipponCount.white;
+      scoreData.result.wins.red = winCount.red;
+      scoreData.result.wins.white = winCount.white;
+    }
+  }
+
   function reset(type: 'score' | 'players' | 'all') {
     if (type === 'score' || type === 'players' || type === 'all') {
       setScoreData(initScoreData);
@@ -487,12 +714,17 @@ function App() {
                   <span className="w-16 text-lg">大将</span>
                   <input className="input input-bordered" />
                 </div>
-                <hr className="border-b-gray-400" />
-                <div className="flex items-center justify-center gap-3">
-                  <input className="input input-error" />
-                  <span className="w-16 text-lg">代表戦</span>
-                  <input className="input input-bordered" />
-                </div>
+
+                {settingsData.daihyo && (
+                  <>
+                    <hr className="border-b-gray-400" />
+                    <div className="flex items-center justify-center gap-3">
+                      <input className="input input-error" />
+                      <span className="w-16 text-lg">代表戦</span>
+                      <input className="input input-bordered" />
+                    </div>
+                  </>
+                )}
               </div>
 
               <div className="modal-action">
@@ -591,58 +823,120 @@ function App() {
         <div className="mt-7 flex justify-center gap-4 text-center">
           <div className="flex flex-col items-end gap-4">
             <div className="flex gap-4">
-              <button className="btn bg-red-700 text-white">コ</button>
-              <button className="btn bg-red-700 text-white">ツ</button>
-              <button className="btn bg-red-700 text-white">ド</button>
-              <button className="btn bg-red-700 text-white">メ</button>
-              <button className="btn bg-red-700 text-white">▲</button>
+              <button
+                className="btn bg-red-700 text-white"
+                onClick={() => ippon('コ', 'red')}
+              >
+                コ
+              </button>
+              <button
+                className="btn bg-red-700 text-white"
+                onClick={() => ippon('ツ', 'red')}
+              >
+                ツ
+              </button>
+              <button
+                className="btn bg-red-700 text-white"
+                onClick={() => ippon('ド', 'red')}
+              >
+                ド
+              </button>
+              <button
+                className="btn bg-red-700 text-white"
+                onClick={() => ippon('メ', 'red')}
+              >
+                メ
+              </button>
+              <button
+                className="btn bg-red-700 text-white"
+                onClick={() => ippon('▲', 'red')}
+              >
+                ▲
+              </button>
             </div>
             <div className="flex gap-4">
-              <button className="btn bg-red-700 text-white">不戦勝</button>
-              <button className="btn bg-red-700 text-white">取消</button>
+              <button
+                className="btn bg-red-700 text-white"
+                onClick={() => ippon('○', 'red')}
+              >
+                不戦勝
+              </button>
+              <button
+                className="btn bg-red-700 text-white"
+                onClick={() => revert('red')}
+              >
+                取消
+              </button>
             </div>
           </div>
           <div className="flex flex-col items-start gap-4">
             <div className="flex gap-4">
-              <button className="btn bg-gray-500 text-white">コ</button>
-              <button className="btn bg-gray-500 text-white">ツ</button>
-              <button className="btn bg-gray-500 text-white">ド</button>
-              <button className="btn bg-gray-500 text-white">メ</button>
-              <button className="btn bg-gray-500 text-white">▲</button>
+              <button
+                className="btn bg-gray-500 text-white"
+                onClick={() => ippon('コ', 'white')}
+              >
+                コ
+              </button>
+              <button
+                className="btn bg-gray-500 text-white"
+                onClick={() => ippon('ツ', 'white')}
+              >
+                ツ
+              </button>
+              <button
+                className="btn bg-gray-500 text-white"
+                onClick={() => ippon('ド', 'white')}
+              >
+                ド
+              </button>
+              <button
+                className="btn bg-gray-500 text-white"
+                onClick={() => ippon('メ', 'white')}
+              >
+                メ
+              </button>
+              <button
+                className="btn bg-gray-500 text-white"
+                onClick={() => ippon('▲', 'white')}
+              >
+                ▲
+              </button>
             </div>
             <div className="flex gap-4">
-              <button className="btn bg-gray-500 text-white">不戦勝</button>
-              <button className="btn bg-gray-500 text-white">取消</button>
+              <button
+                className="btn bg-gray-500 text-white"
+                onClick={() => ippon('○', 'white')}
+              >
+                不戦勝
+              </button>
+              <button
+                className="btn bg-gray-500 text-white"
+                onClick={() => revert('white')}
+              >
+                取消
+              </button>
             </div>
           </div>
         </div>
 
         <div className="mt-7 flex justify-center gap-4 text-center">
-          <button className="btn">
+          <button className="btn" onClick={() => changePlayer('prev')}>
             <ArrowLeftIcon className="h-5 w-5" />
             前選手へ
           </button>
-          <button className="btn">
+          <button className="btn" onClick={() => changePlayer('next')}>
             次選手へ
             <ArrowRightIcon className="h-5 w-5" />
           </button>
         </div>
 
+        {JSON.stringify(settingsData)}
+        <br />
+        {JSON.stringify(playersData)}
+        <br />
+        {JSON.stringify(scoreData)}
+
         {/* 共通ダイアログ */}
-        <button
-          className="btn"
-          onClick={() => {
-            setMessageDialog({
-              type: 'success',
-              message: 'エラーが発生しました。',
-            });
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
-            window.message_dialog.showModal();
-          }}
-        >
-          open modal
-        </button>
         <dialog id="message_dialog" className="modal">
           <form method="dialog" className="modal-box">
             <h3 className="mb-3 text-lg font-bold">
