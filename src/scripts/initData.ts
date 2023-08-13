@@ -1,10 +1,12 @@
 type SettingsData = {
   playerCount: number;
+  playerTitles: string[];
   daihyo: boolean;
 };
 
 export const initSettingsData: SettingsData = {
   playerCount: 5,
+  playerTitles: ['先鋒', '次鋒', '中堅', '副将', '大将'],
   daihyo: true,
 };
 

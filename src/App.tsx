@@ -26,7 +26,6 @@ function App() {
   const [settingsData, setSettingsData] = useState(initSettingsData);
   const [playersData, setPlayersData] = useState(initPlayersData);
   const [scoreData, setScoreData] = useState(initScoreData);
-
   const [messageDialog, setMessageDialog] = useState({
     type: 'info' as 'error' | 'info' | 'success',
     message: '',
@@ -34,7 +33,10 @@ function App() {
 
   useRegisterSW({
     onOfflineReady() {
-      openMessageDialog('info', 'オフラインで使用できるようになりました。');
+      openMessageDialog(
+        'info',
+        '端末にページをキャッシュしました。次回からはインターネットに接続しなくてもこのページを開くことができます。',
+      );
     },
   });
 
@@ -361,51 +363,19 @@ function App() {
             <tbody className="border border-black">
               <tr className="h-[51px] border-b border-black">
                 <th className="w-[170px] border-r border-black">団体名</th>
-                <th
-                  className={
-                    'w-[84px] border-r border-black' +
-                    (scoreData.playing === 0 ? ' bg-green-300' : '')
-                  }
-                  colSpan={2}
-                >
-                  先鋒
-                </th>
-                <th
-                  className={
-                    'w-[84px] border-r border-black' +
-                    (scoreData.playing === 1 ? ' bg-green-300' : '')
-                  }
-                  colSpan={2}
-                >
-                  次鋒
-                </th>
-                <th
-                  className={
-                    'w-[84px] border-r border-black' +
-                    (scoreData.playing === 2 ? ' bg-green-300' : '')
-                  }
-                  colSpan={2}
-                >
-                  中堅
-                </th>
-                <th
-                  className={
-                    'w-[84px] border-r border-black' +
-                    (scoreData.playing === 3 ? ' bg-green-300' : '')
-                  }
-                  colSpan={2}
-                >
-                  副将
-                </th>
-                <th
-                  className={
-                    'w-[84px] border-r border-black' +
-                    (scoreData.playing === 4 ? ' bg-green-300' : '')
-                  }
-                  colSpan={2}
-                >
-                  大将
-                </th>
+
+                {settingsData.playerTitles.map((title, index) => (
+                  <th
+                    className={
+                      'w-[84px] border-r border-black' +
+                      (scoreData.playing === index ? ' bg-green-300' : '')
+                    }
+                    colSpan={2}
+                  >
+                    {title}
+                  </th>
+                ))}
+
                 <th className="w-[80px] border-r border-black" rowSpan={2}>
                   勝点
                 </th>
@@ -422,6 +392,7 @@ function App() {
                   </th>
                 )}
               </tr>
+
               <tr className="border-b border-black">
                 <td
                   className="h-[147px] w-[170px] border-r border-black bg-red-100 p-3"
@@ -429,36 +400,15 @@ function App() {
                 >
                   {playersData.red.name}
                 </td>
-                <td
-                  className="h-[63px] border-r border-black bg-red-100"
-                  colSpan={2}
-                >
-                  {playersData.red.players[0]?.name}
-                </td>
-                <td
-                  className="h-[63px] border-r border-black bg-red-100"
-                  colSpan={2}
-                >
-                  {playersData.red.players[1]?.name}
-                </td>
-                <td
-                  className="h-[63px] border-r border-black bg-red-100"
-                  colSpan={2}
-                >
-                  {playersData.red.players[2]?.name}
-                </td>
-                <td
-                  className="h-[63px] border-r border-black bg-red-100"
-                  colSpan={2}
-                >
-                  {playersData.red.players[3]?.name}
-                </td>
-                <td
-                  className="h-[63px] border-r border-black bg-red-100"
-                  colSpan={2}
-                >
-                  {playersData.red.players[4]?.name}
-                </td>
+
+                {settingsData.playerTitles.map((_title, index) => (
+                  <td
+                    className="h-[63px] border-r border-black bg-red-100"
+                    colSpan={2}
+                  >
+                    {playersData.red.players[index]?.name}
+                  </td>
+                ))}
 
                 {settingsData.daihyo && (
                   <td className="h-[63px] bg-red-100">
@@ -466,37 +416,19 @@ function App() {
                   </td>
                 )}
               </tr>
+
               <tr>
-                <td className="h-[42px] w-[42px] text-[1.7rem]">
-                  {scoreData.score.red?.[0]?.[0]}
-                </td>
-                <td className="h-[42px] w-[42px] border-r border-black text-[1.7rem]">
-                  {scoreData.score.red?.[0]?.[1]}
-                </td>
-                <td className="h-[42px] w-[42px] text-[1.7rem]">
-                  {scoreData.score.red?.[1]?.[0]}
-                </td>
-                <td className="h-[42px] w-[42px] border-r border-black text-[1.7rem]">
-                  {scoreData.score.red?.[1]?.[1]}
-                </td>
-                <td className="h-[42px] w-[42px] text-[1.7rem]">
-                  {scoreData.score.red?.[2]?.[0]}
-                </td>
-                <td className="h-[42px] w-[42px] border-r border-black text-[1.7rem]">
-                  {scoreData.score.red?.[2]?.[1]}
-                </td>
-                <td className="h-[42px] w-[42px] text-[1.7rem]">
-                  {scoreData.score.red?.[3]?.[0]}
-                </td>
-                <td className="h-[42px] w-[42px] border-r border-black text-[1.7rem]">
-                  {scoreData.score.red?.[3]?.[1]}
-                </td>
-                <td className="h-[42px] w-[42px] text-[1.7rem]">
-                  {scoreData.score.red?.[4]?.[0]}
-                </td>
-                <td className="h-[42px] w-[42px] border-r border-black text-[1.7rem]">
-                  {scoreData.score.red?.[4]?.[1]}
-                </td>
+                {settingsData.playerTitles.map((_title, index) => (
+                  <>
+                    <td className="h-[42px] w-[42px] text-[1.7rem]">
+                      {scoreData.score.red?.[index]?.[0]}
+                    </td>
+                    <td className="h-[42px] w-[42px] border-r border-black text-[1.7rem]">
+                      {scoreData.score.red?.[index]?.[1]}
+                    </td>
+                  </>
+                ))}
+
                 <td className="border-r border-black text-[1.7rem]" rowSpan={2}>
                   <span>{scoreData.result.ippons.red}</span>
                   <div className="mx-[15%] my-[3px] h-[2px] w-[70%] bg-gray-900" />
@@ -509,37 +441,18 @@ function App() {
                   </td>
                 )}
               </tr>
+
               <tr className="border-b border-black">
-                <td className="h-[42px] w-[42px] text-[1.7rem]">
-                  {scoreData.score.red?.[0]?.[2]}
-                </td>
-                <td className="h-[42px] w-[42px] border-r border-black text-[1.7rem]">
-                  {scoreData.score.red?.[0]?.[3]}
-                </td>
-                <td className="h-[42px] w-[42px] text-[1.7rem]">
-                  {scoreData.score.red?.[1]?.[2]}
-                </td>
-                <td className="h-[42px] w-[42px] border-r border-black text-[1.7rem]">
-                  {scoreData.score.red?.[1]?.[3]}
-                </td>
-                <td className="h-[42px] w-[42px] text-[1.7rem]">
-                  {scoreData.score.red?.[2]?.[2]}
-                </td>
-                <td className="h-[42px] w-[42px] border-r border-black text-[1.7rem]">
-                  {scoreData.score.red?.[2]?.[3]}
-                </td>
-                <td className="h-[42px] w-[42px] text-[1.7rem]">
-                  {scoreData.score.red?.[3]?.[2]}
-                </td>
-                <td className="h-[42px] w-[42px] border-r border-black text-[1.7rem]">
-                  {scoreData.score.red?.[3]?.[3]}
-                </td>
-                <td className="h-[42px] w-[42px] text-[1.7rem]">
-                  {scoreData.score.red?.[4]?.[2]}
-                </td>
-                <td className="h-[42px] w-[42px] border-r border-black text-[1.7rem]">
-                  {scoreData.score.red?.[4]?.[3]}
-                </td>
+                {settingsData.playerTitles.map((_title, index) => (
+                  <>
+                    <td className="h-[42px] w-[42px] text-[1.7rem]">
+                      {scoreData.score.red?.[index]?.[2]}
+                    </td>
+                    <td className="h-[42px] w-[42px] border-r border-black text-[1.7rem]">
+                      {scoreData.score.red?.[index]?.[3]}
+                    </td>
+                  </>
+                ))}
 
                 {settingsData.daihyo && (
                   <td className="h-[42px] w-[80px] text-[1.7rem]">
@@ -547,6 +460,7 @@ function App() {
                   </td>
                 )}
               </tr>
+
               <tr>
                 <td
                   className="h-[147px] w-[170px] border-r border-black bg-gray-200 p-3"
@@ -554,36 +468,18 @@ function App() {
                 >
                   {playersData.white.name}
                 </td>
-                <td className="h-[42px] w-[42px] text-[1.7rem]">
-                  {scoreData.score.white?.[0]?.[0]}
-                </td>
-                <td className="h-[42px] w-[42px] border-r border-black text-[1.7rem]">
-                  {scoreData.score.white?.[0]?.[1]}
-                </td>
-                <td className="h-[42px] w-[42px] text-[1.7rem]">
-                  {scoreData.score.white?.[1]?.[0]}
-                </td>
-                <td className="h-[42px] w-[42px] border-r border-black text-[1.7rem]">
-                  {scoreData.score.white?.[1]?.[1]}
-                </td>
-                <td className="h-[42px] w-[42px] text-[1.7rem]">
-                  {scoreData.score.white?.[2]?.[0]}
-                </td>
-                <td className="h-[42px] w-[42px] border-r border-black text-[1.7rem]">
-                  {scoreData.score.white?.[2]?.[1]}
-                </td>
-                <td className="h-[42px] w-[42px] text-[1.7rem]">
-                  {scoreData.score.white?.[3]?.[0]}
-                </td>
-                <td className="h-[42px] w-[42px] border-r border-black text-[1.7rem]">
-                  {scoreData.score.white?.[3]?.[1]}
-                </td>
-                <td className="h-[42px] w-[42px] text-[1.7rem]">
-                  {scoreData.score.white?.[4]?.[0]}
-                </td>
-                <td className="h-[42px] w-[42px] border-r border-black text-[1.7rem]">
-                  {scoreData.score.white?.[4]?.[1]}
-                </td>
+
+                {settingsData.playerTitles.map((_title, index) => (
+                  <>
+                    <td className="h-[42px] w-[42px] text-[1.7rem]">
+                      {scoreData.score.white?.[index]?.[0]}
+                    </td>
+                    <td className="h-[42px] w-[42px] border-r border-black text-[1.7rem]">
+                      {scoreData.score.white?.[index]?.[1]}
+                    </td>
+                  </>
+                ))}
+
                 <td className="border-r border-black text-[1.7rem]" rowSpan={2}>
                   <span>{scoreData.result.ippons.white}</span>
                   <div className="mx-[15%] my-[3px] h-[2px] w-[70%] bg-gray-900" />
@@ -596,37 +492,18 @@ function App() {
                   </td>
                 )}
               </tr>
+
               <tr className="border-b border-black">
-                <td className="h-[42px] w-[42px] text-[1.7rem]">
-                  {scoreData.score.white?.[0]?.[2]}
-                </td>
-                <td className="h-[42px] w-[42px] border-r border-black text-[1.7rem]">
-                  {scoreData.score.white?.[0]?.[3]}
-                </td>
-                <td className="h-[42px] w-[42px] text-[1.7rem]">
-                  {scoreData.score.white?.[1]?.[2]}
-                </td>
-                <td className="h-[42px] w-[42px] border-r border-black text-[1.7rem]">
-                  {scoreData.score.white?.[1]?.[3]}
-                </td>
-                <td className="h-[42px] w-[42px] text-[1.7rem]">
-                  {scoreData.score.white?.[2]?.[2]}
-                </td>
-                <td className="h-[42px] w-[42px] border-r border-black text-[1.7rem]">
-                  {scoreData.score.white?.[2]?.[3]}
-                </td>
-                <td className="h-[42px] w-[42px] text-[1.7rem]">
-                  {scoreData.score.white?.[3]?.[2]}
-                </td>
-                <td className="h-[42px] w-[42px] border-r border-black text-[1.7rem]">
-                  {scoreData.score.white?.[3]?.[3]}
-                </td>
-                <td className="h-[42px] w-[42px] text-[1.7rem]">
-                  {scoreData.score.white?.[4]?.[2]}
-                </td>
-                <td className="h-[42px] w-[42px] border-r border-black text-[1.7rem]">
-                  {scoreData.score.white?.[4]?.[3]}
-                </td>
+                {settingsData.playerTitles.map((_title, index) => (
+                  <>
+                    <td className="h-[42px] w-[42px] text-[1.7rem]">
+                      {scoreData.score.white?.[index]?.[2]}
+                    </td>
+                    <td className="h-[42px] w-[42px] border-r border-black text-[1.7rem]">
+                      {scoreData.score.white?.[index]?.[3]}
+                    </td>
+                  </>
+                ))}
 
                 {settingsData.daihyo && (
                   <td className="h-[42px] w-[80px] text-[1.7rem]">
@@ -634,37 +511,17 @@ function App() {
                   </td>
                 )}
               </tr>
+
               <tr>
-                <td
-                  className="h-[63px] border-r border-black bg-gray-200"
-                  colSpan={2}
-                >
-                  {playersData.white.players[0]?.name}
-                </td>
-                <td
-                  className="h-[63px] border-r border-black bg-gray-200"
-                  colSpan={2}
-                >
-                  {playersData.white.players[1]?.name}
-                </td>
-                <td
-                  className="h-[63px] border-r border-black bg-gray-200"
-                  colSpan={2}
-                >
-                  {playersData.white.players[2]?.name}
-                </td>
-                <td
-                  className="h-[63px] border-r border-black bg-gray-200"
-                  colSpan={2}
-                >
-                  {playersData.white.players[3]?.name}
-                </td>
-                <td
-                  className="h-[63px] border-r border-black bg-gray-200"
-                  colSpan={2}
-                >
-                  {playersData.white.players[4]?.name}
-                </td>
+                {settingsData.playerTitles.map((_title, index) => (
+                  <td
+                    className="h-[63px] border-r border-black bg-gray-200"
+                    colSpan={2}
+                  >
+                    {playersData.white.players[index]?.name}
+                  </td>
+                ))}
+
                 <td className="border-r border-black"></td>
 
                 {settingsData.daihyo && (
@@ -711,7 +568,7 @@ function App() {
           </button>
 
           <dialog id="player_modal" className="modal">
-            <form method="dialog" className="modal-box max-w-[600px]">
+            <form method="dialog" className="modal-box max-w-[700px]">
               <h3 className="mb-5 text-lg font-bold">選手名入力</h3>
 
               <div className="flex flex-col gap-5">
@@ -739,31 +596,46 @@ function App() {
                   />
                 </div>
                 <hr className="border-b-gray-400" />
-                <div className="flex items-center justify-center gap-3">
-                  <input className="input input-error" />
-                  <span className="w-16 text-lg">先鋒</span>
-                  <input className="input input-bordered" />
-                </div>
-                <div className="flex items-center justify-center gap-3">
-                  <input className="input input-error" />
-                  <span className="w-16 text-lg">次鋒</span>
-                  <input className="input input-bordered" />
-                </div>
-                <div className="flex items-center justify-center gap-3">
-                  <input className="input input-error" />
-                  <span className="w-16 text-lg">中堅</span>
-                  <input className="input input-bordered" />
-                </div>
-                <div className="flex items-center justify-center gap-3">
-                  <input className="input input-error" />
-                  <span className="w-16 text-lg">副将</span>
-                  <input className="input input-bordered" />
-                </div>
-                <div className="flex items-center justify-center gap-3">
-                  <input className="input input-error" />
-                  <span className="w-16 text-lg">大将</span>
-                  <input className="input input-bordered" />
-                </div>
+
+                {settingsData.playerTitles.map((title, index) => (
+                  <div className="flex items-center justify-center gap-3">
+                    <input
+                      className="input input-error"
+                      value={playersData.red.players[index]?.name}
+                      onChange={(e) =>
+                        setPlayersData((prevState) => ({
+                          ...prevState,
+                          red: {
+                            ...prevState.red,
+                            players: prevState.red.players.map((player, i) =>
+                              i === index
+                                ? { ...player, name: e.target.value }
+                                : player,
+                            ),
+                          },
+                        }))
+                      }
+                    />
+                    <span className="w-16 text-lg">{title}</span>
+                    <input
+                      className="input input-bordered"
+                      value={playersData.white.players[index]?.name}
+                      onChange={(e) =>
+                        setPlayersData((prevState) => ({
+                          ...prevState,
+                          white: {
+                            ...prevState.white,
+                            players: prevState.white.players.map((player, i) =>
+                              i === index
+                                ? { ...player, name: e.target.value }
+                                : player,
+                            ),
+                          },
+                        }))
+                      }
+                    />
+                  </div>
+                ))}
 
                 {settingsData.daihyo && (
                   <>
