@@ -12,6 +12,10 @@ import {
   InformationCircleIcon,
 } from '@heroicons/react/24/solid';
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+import { useRegisterSW } from 'virtual:pwa-register/react';
+
 import {
   initSettingsData,
   initPlayersData,
@@ -26,6 +30,12 @@ function App() {
   const [messageDialog, setMessageDialog] = useState({
     type: 'info' as 'error' | 'info' | 'success',
     message: '',
+  });
+
+  useRegisterSW({
+    onOfflineReady() {
+      openMessageDialog('info', 'オフラインで使用できるようになりました。');
+    },
   });
 
   const scoreboardRef = useRef<HTMLDivElement>(null);
@@ -139,6 +149,8 @@ function App() {
     }
 
     scoreData.score[team][scoreData.playing].push(type as never);
+
+    setScoreData({ ...scoreData });
     calcWinPoint();
   }
 
@@ -161,6 +173,7 @@ function App() {
       playersData[team].players[scoreData.playing].first = 0;
     }
 
+    setScoreData({ ...scoreData });
     calcWinPoint();
   }
 
@@ -175,16 +188,16 @@ function App() {
       scoreData.score.red[5].length === 0 &&
       scoreData.score.white[5].length === 0
     ) {
-      scoreData.playing = 6;
+      scoreData.playing = 100;
     } else if (type === 'next' && scoreData.playing === 5) {
-      scoreData.playing = 6;
+      scoreData.playing = 100;
     } else if (type === 'prev' && scoreData.playing === -1) {
       return;
-    } else if (type === 'next' && scoreData.playing === 6) {
+    } else if (type === 'next' && scoreData.playing === 100) {
       return;
     } else if (
       type === 'prev' &&
-      scoreData.playing === 6 &&
+      scoreData.playing === 100 &&
       scoreData.score.red[5].length === 0 &&
       scoreData.score.white[5].length === 0 &&
       (scoreData.result.wins.red !== scoreData.result.wins.white ||
@@ -232,6 +245,7 @@ function App() {
       }
     }
 
+    setScoreData({ ...scoreData });
     calcWinPoint();
   }
 
@@ -273,10 +287,45 @@ function App() {
 
   function reset(type: 'score' | 'players' | 'all') {
     if (type === 'score' || type === 'players' || type === 'all') {
-      setScoreData(initScoreData);
+      // TODO: 本当は initScoreData を使いたい
+      setScoreData((prevState) => ({
+        ...prevState,
+        playing: -1,
+        score: {
+          red: [],
+          white: [],
+        },
+        hansoku: {
+          red: [],
+          white: [],
+        },
+        result: {
+          ippons: {
+            red: 0,
+            white: 0,
+          },
+          wins: {
+            red: 0,
+            white: 0,
+          },
+          draw: [],
+          winner: '',
+        },
+      }));
     }
     if (type === 'players' || type === 'all') {
-      setPlayersData(initPlayersData);
+      // TODO: 本当は initPlayersData を使いたい
+      setPlayersData((prevState) => ({
+        ...prevState,
+        red: {
+          name: '',
+          players: [],
+        },
+        white: {
+          name: '',
+          players: [],
+        },
+      }));
     }
     if (type === 'all') {
       setSettingsData(initSettingsData);
@@ -315,7 +364,7 @@ function App() {
                 <th
                   className={
                     'w-[84px] border-r border-black' +
-                    (scoreData.playing === 0 ? 'nowplaying' : '')
+                    (scoreData.playing === 0 ? ' bg-green-300' : '')
                   }
                   colSpan={2}
                 >
@@ -324,7 +373,7 @@ function App() {
                 <th
                   className={
                     'w-[84px] border-r border-black' +
-                    (scoreData.playing === 1 ? 'nowplaying' : '')
+                    (scoreData.playing === 1 ? ' bg-green-300' : '')
                   }
                   colSpan={2}
                 >
@@ -333,7 +382,7 @@ function App() {
                 <th
                   className={
                     'w-[84px] border-r border-black' +
-                    (scoreData.playing === 2 ? 'nowplaying' : '')
+                    (scoreData.playing === 2 ? ' bg-green-300' : '')
                   }
                   colSpan={2}
                 >
@@ -342,7 +391,7 @@ function App() {
                 <th
                   className={
                     'w-[84px] border-r border-black' +
-                    (scoreData.playing === 3 ? 'nowplaying' : '')
+                    (scoreData.playing === 3 ? ' bg-green-300' : '')
                   }
                   colSpan={2}
                 >
@@ -351,7 +400,7 @@ function App() {
                 <th
                   className={
                     'w-[84px] border-r border-black' +
-                    (scoreData.playing === 4 ? 'nowplaying' : '')
+                    (scoreData.playing === 4 ? ' bg-green-300' : '')
                   }
                   colSpan={2}
                 >
@@ -364,7 +413,8 @@ function App() {
                 {settingsData.daihyo && (
                   <th
                     className={
-                      'w-[84px]' + (scoreData.playing === 5 ? 'nowplaying' : '')
+                      'w-[84px]' +
+                      (scoreData.playing === 5 ? ' bg-green-300' : '')
                     }
                     style={{ width: '80px' }}
                   >
@@ -820,41 +870,42 @@ function App() {
           </dialog>
         </div>
 
+        {/* スコア入力ボタン */}
         <div className="mt-7 flex justify-center gap-4 text-center">
-          <div className="flex flex-col items-end gap-4">
-            <div className="flex gap-4">
+          <div className="flex flex-col items-end gap-2">
+            <div className="flex gap-2">
               <button
-                className="btn bg-red-700 text-white"
+                className="btn w-16 bg-red-700 text-white"
                 onClick={() => ippon('コ', 'red')}
               >
                 コ
               </button>
               <button
-                className="btn bg-red-700 text-white"
+                className="btn w-16 bg-red-700 text-white"
                 onClick={() => ippon('ツ', 'red')}
               >
                 ツ
               </button>
               <button
-                className="btn bg-red-700 text-white"
+                className="btn w-16 bg-red-700 text-white"
                 onClick={() => ippon('ド', 'red')}
               >
                 ド
               </button>
               <button
-                className="btn bg-red-700 text-white"
+                className="btn w-16 bg-red-700 text-white"
                 onClick={() => ippon('メ', 'red')}
               >
                 メ
               </button>
               <button
-                className="btn bg-red-700 text-white"
+                className="btn w-16 bg-red-700 text-white"
                 onClick={() => ippon('▲', 'red')}
               >
                 ▲
               </button>
             </div>
-            <div className="flex gap-4">
+            <div className="flex gap-2">
               <button
                 className="btn bg-red-700 text-white"
                 onClick={() => ippon('○', 'red')}
@@ -869,40 +920,40 @@ function App() {
               </button>
             </div>
           </div>
-          <div className="flex flex-col items-start gap-4">
-            <div className="flex gap-4">
+          <div className="flex flex-col items-start gap-2">
+            <div className="flex gap-2">
               <button
-                className="btn bg-gray-500 text-white"
+                className="btn w-16 bg-gray-500 text-white"
                 onClick={() => ippon('コ', 'white')}
               >
                 コ
               </button>
               <button
-                className="btn bg-gray-500 text-white"
+                className="btn w-16 bg-gray-500 text-white"
                 onClick={() => ippon('ツ', 'white')}
               >
                 ツ
               </button>
               <button
-                className="btn bg-gray-500 text-white"
+                className="btn w-16 bg-gray-500 text-white"
                 onClick={() => ippon('ド', 'white')}
               >
                 ド
               </button>
               <button
-                className="btn bg-gray-500 text-white"
+                className="btn w-16 bg-gray-500 text-white"
                 onClick={() => ippon('メ', 'white')}
               >
                 メ
               </button>
               <button
-                className="btn bg-gray-500 text-white"
+                className="btn w-16 bg-gray-500 text-white"
                 onClick={() => ippon('▲', 'white')}
               >
                 ▲
               </button>
             </div>
-            <div className="flex gap-4">
+            <div className="flex gap-2">
               <button
                 className="btn bg-gray-500 text-white"
                 onClick={() => ippon('○', 'white')}
@@ -919,6 +970,7 @@ function App() {
           </div>
         </div>
 
+        {/* 選手切り替えボタン */}
         <div className="mt-7 flex justify-center gap-4 text-center">
           <button className="btn" onClick={() => changePlayer('prev')}>
             <ArrowLeftIcon className="h-5 w-5" />
@@ -930,11 +982,13 @@ function App() {
           </button>
         </div>
 
-        {JSON.stringify(settingsData)}
-        <br />
-        {JSON.stringify(playersData)}
-        <br />
-        {JSON.stringify(scoreData)}
+        <div className="mt-5 max-w-3xl">
+          {JSON.stringify(settingsData)}
+          <br />
+          {JSON.stringify(playersData)}
+          <br />
+          {JSON.stringify(scoreData)}
+        </div>
 
         {/* 共通ダイアログ */}
         <dialog id="message_dialog" className="modal">
