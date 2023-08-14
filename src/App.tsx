@@ -462,7 +462,13 @@ function App() {
       }));
     }
     if (type === 'all') {
-      setSettingsData(initSettingsData);
+      // TODO: 本当は initSettingsData を使いたい
+      setSettingsData((prevState) => ({
+        ...prevState,
+        playerCount: 5,
+        playerTitles: ['先鋒', '次鋒', '中堅', '副将', '大将'],
+        daihyo: true,
+      }));
     }
 
     openMessageDialog('success', 'リセットしました。');
