@@ -1115,7 +1115,7 @@ function App() {
         {/* 共通トースト */}
         {toast.show && (
           <div className="toast toast-center">
-            <div className="alert max-w-[90vw] gap-2 overflow-x-scroll bg-gray-800 text-white">
+            <div className="alert max-w-[90vw] gap-2 bg-gray-800 text-white">
               <InformationCircleIcon className="h-5 w-5" />
               <span>{toast.message}</span>
               <div>
