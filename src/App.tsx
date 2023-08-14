@@ -107,9 +107,22 @@ function App() {
     }
 
     // 反則の場合
-    if (type === '▲' && scoreData.hansoku[team][scoreData.playing]) {
+    if (
+      scoreData.playing !== 99 &&
+      type === '▲' &&
+      scoreData.hansoku[team][scoreData.playing]
+    ) {
       type = '反';
       scoreData.hansoku[team][scoreData.playing] = false;
+
+      if (team === 'red') {
+        team = 'white';
+      } else {
+        team = 'red';
+      }
+    } else if (scoreData.playing === 99 && scoreData.daihyo.hansoku[team]) {
+      type = '反';
+      scoreData.daihyo.hansoku[team] = false;
 
       if (team === 'red') {
         team = 'white';
@@ -940,18 +953,15 @@ function App() {
           {/* 表設定変更ダイアログ */}
           <dialog id="config_modal" className="modal">
             <form method="dialog" className="modal-box">
-              <h3 className="mb-5 text-lg font-bold">表設定変更</h3>
+              <h3 className="text-lg font-bold">表設定変更</h3>
+              <span className="text-sm text-gray-500">
+                スコア入力後に変更すると、表が崩れる場合があります。
+              </span>
 
-              <table className="table w-full">
+              <table className="table mt-5 w-full">
                 <tbody>
                   <tr>
-                    <td className="text-right text-base">
-                      選手人数 (3~7人)
-                      <br />
-                      <span className="text-sm text-gray-600">
-                        ※スコア入力後に変更すると、表が崩れる場合があります
-                      </span>
-                    </td>
+                    <td className="text-right text-base">選手人数 (3~7人)</td>
                     <td className="w-1/2">
                       <div className="join">
                         <button
