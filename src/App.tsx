@@ -72,13 +72,14 @@ function App() {
     type: 'コ' | 'ツ' | 'ド' | 'メ' | '▲' | '反' | '○',
     team: 'red' | 'white',
   ) {
+    // 対戦中でなかった場合
     if (scoreData.playing === -1) {
       openMessageDialog(
         'error',
         '対戦が開始されていません。[次選手へ] を押してください。',
       );
       return;
-    } else if (scoreData.playing === 6) {
+    } else if (scoreData.playing === 100) {
       openMessageDialog(
         'error',
         '対戦が終了しています。[リセット] を押してください。',
@@ -86,7 +87,18 @@ function App() {
       return;
     }
 
-    if (scoreData.score[team][scoreData.playing].length >= 2) {
+    // 代表戦には不戦勝はない
+    if (scoreData.playing === 99 && type === '○') {
+      openMessageDialog('error', '代表戦に不戦勝はありません。');
+      return;
+    }
+
+    // 既に勝敗が決まっている場合
+    if (
+      (scoreData.playing !== 99 &&
+        scoreData.score[team][scoreData.playing].length >= 2) ||
+      (scoreData.playing === 99 && scoreData.daihyo.score[team].length >= 1)
+    ) {
       openMessageDialog(
         'error',
         '既に勝敗が決まっています。[次選手へ] を押してください。',
@@ -94,6 +106,7 @@ function App() {
       return;
     }
 
+    // 反則の場合
     if (type === '▲' && scoreData.hansoku[team][scoreData.playing]) {
       type = '反';
       scoreData.hansoku[team][scoreData.playing] = false;
@@ -104,47 +117,82 @@ function App() {
         team = 'red';
       }
     } else if (type === '▲') {
-      scoreData.hansoku[team][scoreData.playing] = true;
+      if (scoreData.playing !== 99) {
+        scoreData.hansoku[team][scoreData.playing] = true;
+      } else {
+        scoreData.daihyo.hansoku[team] = true;
+      }
       setScoreData({ ...scoreData });
       return;
     }
 
+    // 1本目に first フラグを立てる
     if (
-      scoreData.playing !== 5 &&
+      scoreData.playing !== 99 &&
       type !== '○' &&
       scoreData.score.red[scoreData.playing].length === 0 &&
       scoreData.score.white[scoreData.playing].length === 0
     ) {
       playersData[team].players[scoreData.playing].first = true;
+    } else if (
+      scoreData.playing === 99 &&
+      type !== '○' &&
+      scoreData.daihyo.score.red.length === 0 &&
+      scoreData.daihyo.score.white.length === 0
+    ) {
+      playersData[team].daihyo.first = true;
     }
 
+    // 不戦勝は2本なので、もう1つ push する
     if (type === '○') {
       scoreData.score[team][scoreData.playing].push('○' as never);
     }
 
-    scoreData.score[team][scoreData.playing].push(type as never);
+    // 結果を push する
+    if (scoreData.playing !== 99) {
+      scoreData.score[team][scoreData.playing].push(type as never);
+    } else {
+      scoreData.daihyo.score[team].push(type as never);
+    }
 
     setScoreData({ ...scoreData });
     calcWinPoint();
   }
 
   function revert(team: 'red' | 'white') {
+    // 対戦中でなかった場合
     if (scoreData.playing === -1) {
-      alert('対戦が開始されていません。[次選手へ] を押してください。');
+      openMessageDialog(
+        'error',
+        '対戦が開始されていません。[次選手へ] を押してください。',
+      );
       return;
-    } else if (scoreData.playing === 6) {
-      alert('対戦が終了しています。[リセット] を押してください。');
+    } else if (scoreData.playing === 100) {
+      openMessageDialog(
+        'error',
+        '対戦が終了しています。[リセット] を押してください。',
+      );
+      return;
     }
 
-    scoreData.score[team][scoreData.playing].pop();
+    // 結果を取り消す
+    if (scoreData.playing !== 99) {
+      scoreData.score[team][scoreData.playing].pop();
+    } else {
+      scoreData.daihyo.score[team].pop();
+    }
 
-    /* 1本目を取り消した場合 */
+    // 1本目を取り消した場合
     if (
-      scoreData.score[team][scoreData.playing].length === 0 ||
-      (scoreData.score[team][scoreData.playing].length === 1 &&
-        scoreData.score[team][scoreData.playing].some((score) => score === '▲'))
+      scoreData.playing !== 99 &&
+      scoreData.score[team][scoreData.playing].length === 0
     ) {
       playersData[team].players[scoreData.playing].first = false;
+    } else if (
+      scoreData.playing === 99 &&
+      scoreData.daihyo.score[team].length === 0
+    ) {
+      playersData[team].daihyo.first = false;
     }
 
     setScoreData({ ...scoreData });
@@ -166,13 +214,38 @@ function App() {
     // 代表戦の必要がないときは、終了
     else if (
       type === 'next' &&
-      scoreData.playing === settingsData.playerCount - 1 &&
-      (scoreData.wins.red !== scoreData.wins.white ||
-        (scoreData.wins.red === scoreData.wins.white &&
-          scoreData.ippons.red !== scoreData.ippons.white) ||
-        !settingsData.daihyo)
+      scoreData.playing === settingsData.playerCount - 1
     ) {
       scoreData.playing = 100;
+    }
+    // 終了後から戻るとき (代表戦あり)
+    else if (
+      type === 'prev' &&
+      scoreData.playing === 100 &&
+      (scoreData.daihyo.score.red.length !== 0 ||
+        scoreData.daihyo.score.white.length !== 0 ||
+        ((scoreData.wins.red === scoreData.wins.white ||
+          (scoreData.wins.red !== scoreData.wins.white &&
+            scoreData.ippons.red === scoreData.ippons.white)) &&
+          settingsData.daihyo))
+    ) {
+      scoreData.playing = 99;
+    }
+    // 代表戦から戻るとき
+    else if (type === 'prev' && scoreData.playing === 99) {
+      scoreData.playing = settingsData.playerCount - 1;
+    }
+    // 終了後から戻るとき (代表戦なし)
+    else if (type === 'prev' && scoreData.playing === 100) {
+      scoreData.playing = settingsData.playerCount - 1;
+    }
+    // 終了後も進もうとしたとき
+    else if (type === 'next' && scoreData.playing === 100) {
+      openMessageDialog(
+        'error',
+        '対戦が終了しているため、進むことはできません。',
+      );
+      return;
     }
     // 開始前より前に戻ろうとしたとき
     else if (type === 'prev' && scoreData.playing === -1) {
@@ -182,28 +255,12 @@ function App() {
       );
       return;
     }
-    // 終了後も進もうとしたとき
-    else if (type === 'next' && scoreData.playing === 100) {
-      openMessageDialog(
-        'error',
-        '対戦が終了しているため、進むことはできません。',
-      );
-      return;
-    } else if (
-      type === 'prev' &&
-      scoreData.playing === 100 &&
-      scoreData.score.red[5].length === 0 &&
-      scoreData.score.white[5].length === 0 &&
-      (scoreData.wins.red !== scoreData.wins.white ||
-        (scoreData.wins.red === scoreData.wins.white &&
-          scoreData.ippons.red !== scoreData.ippons.white))
-    ) {
-      scoreData.playing = 4;
-    } else if (type === 'prev' && scoreData.playing === 0) {
-      scoreData.playing = -1;
-    } else if (type === 'next') {
+    // 通常の進行
+    else if (type === 'next') {
       scoreData.playing++;
-    } else if (type === 'prev') {
+    }
+    // 通常の戻り
+    else if (type === 'prev') {
       scoreData.playing--;
     }
 
@@ -501,7 +558,7 @@ function App() {
                 {settingsData.daihyo && (
                   <>
                     <td className="relative h-[42px] w-[42px] pb-0.5 pr-0.5 text-right align-bottom text-[2rem]">
-                      {scoreData.score.red?.[5]?.[0]}
+                      {scoreData.daihyo.score.red[0]}
 
                       {playersData.red.daihyo.first && (
                         <CircleSvg className="absolute left-0 top-0.5" />
@@ -560,7 +617,7 @@ function App() {
                 {settingsData.daihyo && (
                   <>
                     <td className="relative h-[42px] w-[42px] pb-0.5 pr-0.5 text-right align-bottom text-[2rem]">
-                      {scoreData.score.white?.[5]?.[0]}
+                      {scoreData.daihyo.score.white[0]}
 
                       {playersData.white.daihyo.first && (
                         <CircleSvg className="absolute left-0 top-0.5" />
@@ -999,9 +1056,6 @@ function App() {
         </div>
 
         {/* ダウンロード中ローディングオーバーレイ */}
-        <button className="btn" onClick={() => setIsDownloading(true)}>
-          ダウンロード中
-        </button>
         {isDownloading && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
             <div className="card w-96 bg-base-100">
