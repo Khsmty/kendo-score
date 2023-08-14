@@ -1041,20 +1041,6 @@ function App() {
           </button>
         </div>
 
-        <div className="mt-5 max-w-3xl">
-          {JSON.stringify(settingsData)}
-          <br />
-          {JSON.stringify(playersData)}
-          <br />
-          {JSON.stringify(scoreData)}
-          <br />
-          {JSON.stringify(messageDialog)}
-          <br />
-          {JSON.stringify(toast)}
-          <br />
-          {JSON.stringify(isDownloading)}
-        </div>
-
         {/* ダウンロード中ローディングオーバーレイ */}
         {isDownloading && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
