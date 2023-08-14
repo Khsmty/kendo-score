@@ -358,6 +358,47 @@ function App() {
     setPlayersData({ ...playersData });
   }
 
+  function changePlayerCount(
+    type: 'increment' | 'decrement' | 'custom',
+    value?: number,
+  ) {
+    value = value || 5;
+    if (
+      (type === 'increment' && settingsData.playerCount === 7) ||
+      (type === 'decrement' && settingsData.playerCount === 3) ||
+      (type === 'custom' && (value < 3 || value > 7))
+    ) {
+      openMessageDialog('error', '選手人数は3~7人の間で設定してください。');
+      return;
+    }
+
+    if (type === 'increment') {
+      settingsData.playerCount++;
+    } else if (type === 'decrement') {
+      settingsData.playerCount--;
+    } else if (type === 'custom') {
+      settingsData.playerCount = value || 5;
+    }
+
+    const hou = ['先鋒', '次鋒', '三鋒'];
+    const sho = ['三将', '副将', '大将'];
+
+    const titles = [];
+    const num = Math.floor(settingsData.playerCount / 2);
+
+    titles.push(...hou.slice(0, num));
+
+    if (settingsData.playerCount % 2 === 1) {
+      titles.push('中堅');
+    }
+
+    titles.push(...sho.slice(sho.length - num));
+
+    settingsData.playerTitles = titles;
+
+    setSettingsData({ ...settingsData });
+  }
+
   function reset(type: 'score' | 'players' | 'all') {
     if (type === 'score' || type === 'players' || type === 'all') {
       // TODO: 本当は initScoreData を使いたい
@@ -808,21 +849,19 @@ function App() {
               <table className="table w-full">
                 <tbody>
                   <tr>
-                    <td className="text-right text-base">選手人数 (3~7人)</td>
+                    <td className="text-right text-base">
+                      選手人数 (3~7人)
+                      <br />
+                      <span className="text-sm text-gray-600">
+                        ※スコア入力後に変更すると、表が崩れる場合があります
+                      </span>
+                    </td>
                     <td className="w-1/2">
                       <div className="join">
                         <button
                           className="btn join-item"
                           type="button"
-                          onClick={() =>
-                            setSettingsData({
-                              ...settingsData,
-                              playerCount:
-                                settingsData.playerCount - 1 < 3
-                                  ? 3
-                                  : settingsData.playerCount - 1,
-                            })
-                          }
+                          onClick={() => changePlayerCount('decrement')}
                         >
                           －
                         </button>
@@ -833,24 +872,13 @@ function App() {
                           max={7}
                           value={settingsData.playerCount}
                           onChange={(e) =>
-                            setSettingsData({
-                              ...settingsData,
-                              playerCount: Number(e.target.value),
-                            })
+                            changePlayerCount('custom', Number(e.target.value))
                           }
                         />
                         <button
                           className="btn join-item"
                           type="button"
-                          onClick={() =>
-                            setSettingsData({
-                              ...settingsData,
-                              playerCount:
-                                settingsData.playerCount + 1 > 7
-                                  ? 7
-                                  : settingsData.playerCount + 1,
-                            })
-                          }
+                          onClick={() => changePlayerCount('increment')}
                         >
                           ＋
                         </button>
