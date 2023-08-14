@@ -27,6 +27,7 @@ function App() {
   const [settingsData, setSettingsData] = useState(initSettingsData);
   const [playersData, setPlayersData] = useState(initPlayersData);
   const [scoreData, setScoreData] = useState(initScoreData);
+  const [isDownloading, setIsDownloading] = useState(false);
   const [messageDialog, setMessageDialog] = useState({
     type: 'info' as 'error' | 'info' | 'success',
     message: '',
@@ -39,7 +40,7 @@ function App() {
   useRegisterSW({
     onOfflineReady() {
       showToast(
-        '端末にページをキャッシュしました。次回からはインターネットに接続しなくてもこのページを開くことができます。',
+        'ページをキャッシュしました。インターネットに接続しなくてもこのページを開けます。',
       );
     },
   });
@@ -99,37 +100,20 @@ function App() {
 
       if (team === 'red') {
         team = 'white';
-
-        scoreData.score.red[scoreData.playing].splice(
-          scoreData.score.red[scoreData.playing].indexOf('▲' as never),
-          1,
-        );
       } else {
         team = 'red';
-
-        scoreData.score.white[scoreData.playing].splice(
-          scoreData.score.white[scoreData.playing].indexOf('▲' as never),
-          1,
-        );
       }
     } else if (type === '▲') {
       scoreData.hansoku[team][scoreData.playing] = true;
+      setScoreData({ ...scoreData });
+      return;
     }
 
     if (
       scoreData.playing !== 5 &&
-      type !== '▲' &&
       type !== '○' &&
-      (scoreData.score.red[scoreData.playing].length === 0 ||
-        (scoreData.score.red[scoreData.playing].length === 1 &&
-          scoreData.score.red[scoreData.playing].some(
-            (score) => score === '▲',
-          ))) &&
-      (scoreData.score.white[scoreData.playing].length === 0 ||
-        (scoreData.score.white[scoreData.playing].length === 1 &&
-          scoreData.score.white[scoreData.playing].some(
-            (score) => score === '▲',
-          )))
+      scoreData.score.red[scoreData.playing].length === 0 &&
+      scoreData.score.white[scoreData.playing].length === 0
     ) {
       playersData[team].players[scoreData.playing].first = true;
     }
@@ -171,19 +155,39 @@ function App() {
     // 勝数と一本数が同じときは、代表戦へ
     if (
       type === 'next' &&
-      scoreData.playing === 4 &&
+      scoreData.playing === settingsData.playerCount - 1 &&
+      (scoreData.wins.red === scoreData.wins.white ||
+        (scoreData.wins.red !== scoreData.wins.white &&
+          scoreData.ippons.red === scoreData.ippons.white)) &&
+      settingsData.daihyo
+    ) {
+      scoreData.playing = 99;
+    }
+    // 代表戦の必要がないときは、終了
+    else if (
+      type === 'next' &&
+      scoreData.playing === settingsData.playerCount - 1 &&
       (scoreData.wins.red !== scoreData.wins.white ||
         (scoreData.wins.red === scoreData.wins.white &&
-          scoreData.ippons.red !== scoreData.ippons.white)) &&
-      scoreData.score.red[5].length === 0 &&
-      scoreData.score.white[5].length === 0
+          scoreData.ippons.red !== scoreData.ippons.white) ||
+        !settingsData.daihyo)
     ) {
       scoreData.playing = 100;
-    } else if (type === 'next' && scoreData.playing === 5) {
-      scoreData.playing = 100;
-    } else if (type === 'prev' && scoreData.playing === -1) {
+    }
+    // 開始前より前に戻ろうとしたとき
+    else if (type === 'prev' && scoreData.playing === -1) {
+      openMessageDialog(
+        'error',
+        '対戦が開始されていないため、戻ることはできません。',
+      );
       return;
-    } else if (type === 'next' && scoreData.playing === 100) {
+    }
+    // 終了後も進もうとしたとき
+    else if (type === 'next' && scoreData.playing === 100) {
+      openMessageDialog(
+        'error',
+        '対戦が終了しているため、進むことはできません。',
+      );
       return;
     } else if (
       type === 'prev' &&
@@ -204,7 +208,7 @@ function App() {
     }
 
     // scoreData.score, scoreData.hansoku がなければ作成
-    if (scoreData.playing !== -1 && scoreData.playing !== 100) {
+    if (![-1, 99, 100].includes(scoreData.playing)) {
       if (!scoreData.score.red[scoreData.playing]) {
         scoreData.score.red[scoreData.playing] = [];
       }
@@ -220,7 +224,7 @@ function App() {
     }
 
     // player が入力されていなければ作成
-    if (scoreData.playing !== -1 && scoreData.playing !== 100) {
+    if (![-1, 99, 100].includes(scoreData.playing)) {
       if (!playersData.red.players[scoreData.playing]) {
         playersData.red.players[scoreData.playing] = {
           name: '',
@@ -235,6 +239,7 @@ function App() {
       }
     }
 
+    setPlayersData({ ...playersData });
     setScoreData({ ...scoreData });
     calcWinPoint();
   }
@@ -262,13 +267,17 @@ function App() {
       } else if (red > white) {
         winCount.red++;
         scoreData.draw[i] = false;
-      } else scoreData.draw[i] = i < scoreData.playing;
-
-      scoreData.ippons.red = ipponCount.red;
-      scoreData.ippons.white = ipponCount.white;
-      scoreData.wins.red = winCount.red;
-      scoreData.wins.white = winCount.white;
+      } else {
+        scoreData.draw[i] = i < scoreData.playing;
+      }
     }
+
+    scoreData.ippons.red = ipponCount.red;
+    scoreData.ippons.white = ipponCount.white;
+    scoreData.wins.red = winCount.red;
+    scoreData.wins.white = winCount.white;
+
+    setScoreData({ ...scoreData });
   }
 
   function updatePlayerName(
@@ -308,8 +317,8 @@ function App() {
         },
         daihyo: {
           score: {
-            red: '',
-            white: '',
+            red: [],
+            white: [],
           },
           hansoku: {
             red: false,
@@ -327,6 +336,16 @@ function App() {
         draw: [],
         winner: '',
       }));
+    }
+    if (type === 'score') {
+      playersData.red.players.map((player) => {
+        player.first = false;
+      });
+      playersData.white.players.map((player) => {
+        player.first = false;
+      });
+
+      setPlayersData({ ...playersData });
     }
     if (type === 'players' || type === 'all') {
       // TODO: 本当は initPlayersData を使いたい
@@ -357,17 +376,21 @@ function App() {
         'error',
         '対戦が進行中です。[次選手へ] を押して終了させてください。',
       );
+      setIsDownloading(false);
       return;
     }
 
-    const element = scoreboardRef.current;
+    setIsDownloading(true);
 
-    toJpeg(element!).then(function (dataUrl) {
-      const link = document.createElement('a');
-      link.download = 'scoreboard.jpeg';
-      link.href = dataUrl;
-      link.click();
-    });
+    const element = scoreboardRef.current;
+    const toImg = await toJpeg(element!);
+
+    const link = document.createElement('a');
+    link.download = 'scoreboard.jpeg';
+    link.href = toImg;
+    link.click();
+
+    setIsDownloading(false);
   }
 
   return (
@@ -401,7 +424,7 @@ function App() {
                   <th
                     className={
                       'w-[84px]' +
-                      (scoreData.playing === 5 ? ' bg-green-300' : '')
+                      (scoreData.playing === 99 ? ' bg-green-300' : '')
                     }
                     colSpan={2}
                   >
@@ -454,7 +477,7 @@ function App() {
                           height="150"
                           viewBox="0 0 24 36"
                           stroke="#000"
-                          strokeWidth="0.8"
+                          strokeWidth="0.6"
                           strokeLinecap="round"
                           className="absolute -left-2 top-2"
                         >
@@ -641,7 +664,7 @@ function App() {
               <div className="flex flex-col gap-5">
                 <div className="flex items-center justify-center gap-3">
                   <input
-                    className="input input-error"
+                    className="input input-error w-64"
                     value={playersData.red.name}
                     onChange={(e) =>
                       setPlayersData({
@@ -652,7 +675,7 @@ function App() {
                   />
                   <span className="w-16 text-lg">団体名</span>
                   <input
-                    className="input input-bordered"
+                    className="input input-bordered w-64"
                     value={playersData.white.name}
                     onChange={(e) =>
                       setPlayersData({
@@ -670,7 +693,7 @@ function App() {
                     key={index}
                   >
                     <input
-                      className="input input-error"
+                      className="input input-error w-64"
                       value={playersData.red.players[index]?.name}
                       onChange={(e) =>
                         updatePlayerName('red', index, e.target.value)
@@ -678,7 +701,7 @@ function App() {
                     />
                     <span className="w-16 text-lg">{title}</span>
                     <input
-                      className="input input-bordered"
+                      className="input input-bordered w-64"
                       value={playersData.white.players[index]?.name}
                       onChange={(e) =>
                         updatePlayerName('white', index, e.target.value)
@@ -692,7 +715,7 @@ function App() {
                     <hr className="border-b-gray-400" />
                     <div className="flex items-center justify-center gap-3">
                       <input
-                        className="input input-error"
+                        className="input input-error w-64"
                         value={playersData.red.daihyo.name}
                         onChange={(e) =>
                           updatePlayerName('red', 100, e.target.value)
@@ -700,7 +723,7 @@ function App() {
                       />
                       <span className="w-16 text-lg">代表戦</span>
                       <input
-                        className="input input-bordered"
+                        className="input input-bordered w-64"
                         value={playersData.white.daihyo.name}
                         onChange={(e) =>
                           updatePlayerName('white', 100, e.target.value)
@@ -967,7 +990,38 @@ function App() {
           {JSON.stringify(playersData)}
           <br />
           {JSON.stringify(scoreData)}
+          <br />
+          {JSON.stringify(messageDialog)}
+          <br />
+          {JSON.stringify(toast)}
+          <br />
+          {JSON.stringify(isDownloading)}
         </div>
+
+        {/* ダウンロード中ローディングオーバーレイ */}
+        <button className="btn" onClick={() => setIsDownloading(true)}>
+          ダウンロード中
+        </button>
+        {isDownloading && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="card w-96 bg-base-100">
+              <div className="card-body flex flex-col items-center text-center">
+                <span className="loading loading-spinner loading-lg text-blue-700"></span>
+
+                <h2 className="card-title justify-center">ダウンロード中</h2>
+                <p>
+                  表を画像に変換しています。
+                  <br />
+                  しばらくお待ちください...
+                </p>
+                <p className="text-xs text-gray-600">
+                  ※iPad
+                  など、画面の解像度が高い端末の場合は時間がかかる可能性があります
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* 共通ダイアログ */}
         <dialog id="message_dialog" className="modal">
@@ -1007,7 +1061,7 @@ function App() {
         {/* 共通トースト */}
         {toast.show && (
           <div className="toast toast-center">
-            <div className="alert gap-2 bg-gray-800 text-white">
+            <div className="alert max-w-[90vw] gap-2 overflow-x-scroll bg-gray-800 text-white">
               <InformationCircleIcon className="h-5 w-5" />
               <span>{toast.message}</span>
               <div>

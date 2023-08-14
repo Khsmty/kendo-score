@@ -37,6 +37,7 @@ export const initPlayersData: PlayersData = {
 };
 
 type ScoreData = {
+  // -1: 対戦開始前, 99: 代表戦, 100: 対戦終了
   playing: number;
   score: {
     red: string[][];
@@ -48,8 +49,8 @@ type ScoreData = {
   };
   daihyo: {
     score: {
-      red: string;
-      white: string;
+      red: string[];
+      white: string[];
     };
     hansoku: {
       red: boolean;
@@ -80,8 +81,8 @@ export const initScoreData: ScoreData = {
   },
   daihyo: {
     score: {
-      red: '',
-      white: '',
+      red: [],
+      white: [],
     },
     hansoku: {
       red: false,
