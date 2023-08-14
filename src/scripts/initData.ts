@@ -57,16 +57,16 @@ type ScoreData = {
       white: boolean;
     };
   };
-  ippons: {
+  ipponCount: {
     red: number;
     white: number;
   };
-  wins: {
+  winCount: {
     red: number;
     white: number;
   };
   draw: boolean[];
-  winner: 'red' | 'white' | '';
+  winner: 'red' | 'white' | 'draw' | '';
 };
 
 export const initScoreData: ScoreData = {
@@ -89,11 +89,11 @@ export const initScoreData: ScoreData = {
       white: false,
     },
   },
-  ippons: {
+  ipponCount: {
     red: 0,
     white: 0,
   },
-  wins: {
+  winCount: {
     red: 0,
     white: 0,
   },

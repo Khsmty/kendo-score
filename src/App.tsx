@@ -21,7 +21,7 @@ import {
   initPlayersData,
   initScoreData,
 } from './scripts/initData.ts';
-import { CircleSvg } from './components/CircleSvg.tsx';
+import { CircleSvg, SquareSvg, TriangleSvg } from './components/SvgIcons.tsx';
 
 function App() {
   const [settingsData, setSettingsData] = useState(initSettingsData);
@@ -204,9 +204,9 @@ function App() {
     if (
       type === 'next' &&
       scoreData.playing === settingsData.playerCount - 1 &&
-      (scoreData.wins.red === scoreData.wins.white ||
-        (scoreData.wins.red !== scoreData.wins.white &&
-          scoreData.ippons.red === scoreData.ippons.white)) &&
+      (scoreData.winCount.red === scoreData.winCount.white ||
+        (scoreData.winCount.red !== scoreData.winCount.white &&
+          scoreData.ipponCount.red === scoreData.ipponCount.white)) &&
       settingsData.daihyo
     ) {
       scoreData.playing = 99;
@@ -224,9 +224,9 @@ function App() {
       scoreData.playing === 100 &&
       (scoreData.daihyo.score.red.length !== 0 ||
         scoreData.daihyo.score.white.length !== 0 ||
-        ((scoreData.wins.red === scoreData.wins.white ||
-          (scoreData.wins.red !== scoreData.wins.white &&
-            scoreData.ippons.red === scoreData.ippons.white)) &&
+        ((scoreData.winCount.red === scoreData.winCount.white ||
+          (scoreData.winCount.red !== scoreData.winCount.white &&
+            scoreData.ipponCount.red === scoreData.ipponCount.white)) &&
           settingsData.daihyo))
     ) {
       scoreData.playing = 99;
@@ -311,7 +311,8 @@ function App() {
       white: 0,
     };
 
-    for (let i = 0; i <= 5; i++) {
+    // 勝数と一本数を計算
+    for (let i = 0; i <= settingsData.playerCount; i++) {
       const red = scoreData.score['red'][i]?.length || 0;
       const white = scoreData.score['white'][i]?.length || 0;
 
@@ -329,10 +330,36 @@ function App() {
       }
     }
 
-    scoreData.ippons.red = ipponCount.red;
-    scoreData.ippons.white = ipponCount.white;
-    scoreData.wins.red = winCount.red;
-    scoreData.wins.white = winCount.white;
+    // 代表戦の勝敗を計算
+    const daihyoRed = scoreData.daihyo.score.red.length;
+    const daihyoWhite = scoreData.daihyo.score.white.length;
+
+    ipponCount.red += daihyoRed;
+    ipponCount.white += daihyoWhite;
+
+    if (daihyoRed < daihyoWhite) {
+      winCount.white++;
+    } else if (daihyoRed > daihyoWhite) {
+      winCount.red++;
+    }
+
+    scoreData.ipponCount.red = ipponCount.red;
+    scoreData.ipponCount.white = ipponCount.white;
+    scoreData.winCount.red = winCount.red;
+    scoreData.winCount.white = winCount.white;
+
+    // 終了後なら勝敗を計算
+    if (scoreData.playing === 100) {
+      if (scoreData.winCount.red > scoreData.winCount.white) {
+        scoreData.winner = 'red';
+      } else if (scoreData.winCount.red < scoreData.winCount.white) {
+        scoreData.winner = 'white';
+      } else {
+        scoreData.winner = 'draw';
+      }
+    } else {
+      scoreData.winner = '';
+    }
 
     setScoreData({ ...scoreData });
   }
@@ -358,7 +385,7 @@ function App() {
     setPlayersData({ ...playersData });
   }
 
-  function changePlayerCount(
+  function updatePlayerCount(
     type: 'increment' | 'decrement' | 'custom',
     value?: number,
   ) {
@@ -380,6 +407,10 @@ function App() {
       settingsData.playerCount = value || 5;
     }
 
+    // playing を -1 にする
+    scoreData.playing = -1;
+
+    // タイトルを更新
     const hou = ['先鋒', '次鋒', '三鋒'];
     const sho = ['三将', '副将', '大将'];
 
@@ -396,6 +427,15 @@ function App() {
 
     settingsData.playerTitles = titles;
 
+    // あふれているスコアがあれば消す
+    if (scoreData.score.red.length > settingsData.playerCount) {
+      scoreData.score.red.splice(settingsData.playerCount);
+    }
+    if (scoreData.score.white.length > settingsData.playerCount) {
+      scoreData.score.white.splice(settingsData.playerCount);
+    }
+
+    setScoreData({ ...scoreData });
     setSettingsData({ ...settingsData });
   }
 
@@ -423,11 +463,11 @@ function App() {
             white: false,
           },
         },
-        ippons: {
+        ipponCount: {
           red: 0,
           white: 0,
         },
-        wins: {
+        winCount: {
           red: 0,
           white: 0,
         },
@@ -596,10 +636,35 @@ function App() {
                   </React.Fragment>
                 ))}
 
-                <td className="border-r border-black text-[1.7rem]" rowSpan={2}>
-                  <span>{scoreData.ippons.red}</span>
+                <td
+                  className="relative border-r border-black text-[1.7rem]"
+                  rowSpan={2}
+                >
+                  <span>{scoreData.ipponCount.red}</span>
                   <div className="mx-[15%] my-[3px] h-[2px] w-[70%] bg-gray-900" />
-                  <span>{scoreData.wins.red}</span>
+                  <span>{scoreData.winCount.red}</span>
+
+                  {scoreData.winner === 'red' && (
+                    <CircleSvg
+                      className="absolute left-0 top-0.5"
+                      size={80}
+                      strokeWidth={0.5}
+                    />
+                  )}
+                  {scoreData.winner === 'draw' && (
+                    <SquareSvg
+                      className="absolute -left-0.5 top-0"
+                      size={85}
+                      strokeWidth={0.5}
+                    />
+                  )}
+                  {scoreData.winner === 'white' && (
+                    <TriangleSvg
+                      className="absolute -left-0.5 top-0"
+                      size={85}
+                      strokeWidth={0.5}
+                    />
+                  )}
                 </td>
 
                 {settingsData.daihyo && (
@@ -655,10 +720,35 @@ function App() {
                   </React.Fragment>
                 ))}
 
-                <td className="border-r border-black text-[1.7rem]" rowSpan={2}>
-                  <span>{scoreData.ippons.white}</span>
+                <td
+                  className="relative border-r border-black text-[1.7rem]"
+                  rowSpan={2}
+                >
+                  <span>{scoreData.ipponCount.white}</span>
                   <div className="mx-[15%] my-[3px] h-[2px] w-[70%] bg-gray-900" />
-                  <span>{scoreData.wins.white}</span>
+                  <span>{scoreData.winCount.white}</span>
+
+                  {scoreData.winner === 'white' && (
+                    <CircleSvg
+                      className="absolute left-0 top-0.5"
+                      size={80}
+                      strokeWidth={0.5}
+                    />
+                  )}
+                  {scoreData.winner === 'draw' && (
+                    <SquareSvg
+                      className="absolute -left-0.5 top-0"
+                      size={85}
+                      strokeWidth={0.5}
+                    />
+                  )}
+                  {scoreData.winner === 'red' && (
+                    <TriangleSvg
+                      className="absolute -left-0.5 top-0"
+                      size={85}
+                      strokeWidth={0.5}
+                    />
+                  )}
                 </td>
 
                 {settingsData.daihyo && (
@@ -867,7 +957,7 @@ function App() {
                         <button
                           className="btn join-item"
                           type="button"
-                          onClick={() => changePlayerCount('decrement')}
+                          onClick={() => updatePlayerCount('decrement')}
                         >
                           －
                         </button>
@@ -878,13 +968,13 @@ function App() {
                           max={7}
                           value={settingsData.playerCount}
                           onChange={(e) =>
-                            changePlayerCount('custom', Number(e.target.value))
+                            updatePlayerCount('custom', Number(e.target.value))
                           }
                         />
                         <button
                           className="btn join-item"
                           type="button"
-                          onClick={() => changePlayerCount('increment')}
+                          onClick={() => updatePlayerCount('increment')}
                         >
                           ＋
                         </button>
