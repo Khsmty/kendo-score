@@ -342,7 +342,7 @@ function App() {
     index: number,
     name: string,
   ) {
-    if (index !== 100) {
+    if (index !== 99) {
       if (!playersData[team].players[index]) {
         playersData[team].players[index] = {
           name: '',
@@ -496,7 +496,7 @@ function App() {
                   className="h-[147px] w-[170px] border-r border-black bg-red-100 p-3"
                   rowSpan={3}
                 >
-                  {playersData.red.name}
+                  {playersData.red.name || ''}
                 </td>
 
                 {settingsData.playerTitles.map((_title, index) => (
@@ -596,7 +596,7 @@ function App() {
                   className="h-[147px] w-[170px] border-r border-black bg-gray-200 p-3"
                   rowSpan={3}
                 >
-                  {playersData.white.name}
+                  {playersData.white.name || ''}
                 </td>
 
                 {settingsData.playerTitles.map((_title, index) => (
@@ -751,7 +751,7 @@ function App() {
                   >
                     <input
                       className="input input-error w-64"
-                      value={playersData.red.players[index]?.name}
+                      value={playersData.red.players[index]?.name || ''}
                       onChange={(e) =>
                         updatePlayerName('red', index, e.target.value)
                       }
@@ -759,7 +759,7 @@ function App() {
                     <span className="w-16 text-lg">{title}</span>
                     <input
                       className="input input-bordered w-64"
-                      value={playersData.white.players[index]?.name}
+                      value={playersData.white.players[index]?.name || ''}
                       onChange={(e) =>
                         updatePlayerName('white', index, e.target.value)
                       }
@@ -775,7 +775,7 @@ function App() {
                         className="input input-error w-64"
                         value={playersData.red.daihyo.name}
                         onChange={(e) =>
-                          updatePlayerName('red', 100, e.target.value)
+                          updatePlayerName('red', 99, e.target.value)
                         }
                       />
                       <span className="w-16 text-lg">代表戦</span>
@@ -783,7 +783,7 @@ function App() {
                         className="input input-bordered w-64"
                         value={playersData.white.daihyo.name}
                         onChange={(e) =>
-                          updatePlayerName('white', 100, e.target.value)
+                          updatePlayerName('white', 99, e.target.value)
                         }
                       />
                     </div>
