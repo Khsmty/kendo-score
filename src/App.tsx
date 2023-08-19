@@ -424,7 +424,7 @@ function App() {
     scoreData.playing = -1;
 
     // タイトルを更新
-    const titles = {
+    const titles: { [key: number]: string[]; } = {
       3: ['先鋒', '中堅', '大将'],
       4: ['先鋒', '中堅', '副将', '大将'],
       5: ['先鋒', '次鋒', '中堅', '副将', '大将'],
