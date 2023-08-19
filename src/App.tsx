@@ -424,21 +424,14 @@ function App() {
     scoreData.playing = -1;
 
     // タイトルを更新
-    const hou = ['先鋒', '次鋒', '三鋒'];
-    const sho = ['三将', '副将', '大将'];
-
-    const titles = [];
-    const num = Math.floor(settingsData.playerCount / 2);
-
-    titles.push(...hou.slice(0, num));
-
-    if (settingsData.playerCount % 2 === 1) {
-      titles.push('中堅');
+    const titles = {
+      3: ['先鋒', '中堅', '大将'],
+      4: ['先鋒', '中堅', '副将', '大将'],
+      5: ['先鋒', '次鋒', '中堅', '副将', '大将'],
+      6: ['先鋒', '次鋒', '中堅', '三将', '副将', '大将'],
+      7: ['先鋒', '次鋒', '五将', '中堅', '三将', '副将', '大将'],
     }
-
-    titles.push(...sho.slice(sho.length - num));
-
-    settingsData.playerTitles = titles;
+    settingsData.playerTitles = titles[settingsData.playerCount];
 
     // あふれているスコアがあれば消す
     if (scoreData.score.red.length > settingsData.playerCount) {
