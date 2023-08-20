@@ -488,6 +488,8 @@ function App() {
       playersData.white.players.map((player) => {
         player.first = false;
       });
+      playersData.red.daihyo.first = false;
+      playersData.white.daihyo.first = false;
 
       setPlayersData({ ...playersData });
     }
