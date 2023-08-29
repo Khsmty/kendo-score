@@ -404,11 +404,11 @@ function App() {
   ) {
     value = value || 5;
     if (
-      (type === 'increment' && settingsData.playerCount === 7) ||
+      (type === 'increment' && settingsData.playerCount === 8) ||
       (type === 'decrement' && settingsData.playerCount === 3) ||
-      (type === 'custom' && (value < 3 || value > 7))
+      (type === 'custom' && (value < 3 || value > 8))
     ) {
-      openMessageDialog('error', '選手人数は3~7人の間で設定してください。');
+      openMessageDialog('error', '選手人数は3~8人の間で設定してください。');
       return;
     }
 
@@ -430,6 +430,7 @@ function App() {
       5: ['先鋒', '次鋒', '中堅', '副将', '大将'],
       6: ['先鋒', '次鋒', '中堅', '三将', '副将', '大将'],
       7: ['先鋒', '次鋒', '五将', '中堅', '三将', '副将', '大将'],
+      8: ['先鋒', '次鋒', '六将', '五将', '中堅', '三将', '副将', '大将'],
     }
     settingsData.playerTitles = titles[settingsData.playerCount];
 
