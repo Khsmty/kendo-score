@@ -958,7 +958,7 @@ function App() {
               <table className="table mt-5 w-full">
                 <tbody>
                   <tr>
-                    <td className="text-right text-base">選手人数 (3~7人)</td>
+                    <td className="text-right text-base">選手人数 (3~9人)</td>
                     <td className="w-1/2">
                       <div className="join">
                         <button
@@ -972,7 +972,7 @@ function App() {
                           className="input join-item input-bordered w-14"
                           type="number"
                           min={3}
-                          max={7}
+                          max={9}
                           value={settingsData.playerCount}
                           onChange={(e) =>
                             updatePlayerCount('custom', Number(e.target.value))
