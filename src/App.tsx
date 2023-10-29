@@ -367,6 +367,16 @@ function App() {
         scoreData.winner = 'red';
       } else if (scoreData.winCount.red < scoreData.winCount.white) {
         scoreData.winner = 'white';
+      } else if (
+        scoreData.winCount.red === scoreData.winCount.white &&
+        scoreData.ipponCount.red > scoreData.ipponCount.white
+      ) {
+        scoreData.winner = 'red';
+      } else if (
+        scoreData.winCount.red === scoreData.winCount.white &&
+        scoreData.ipponCount.red < scoreData.ipponCount.white
+      ) {
+        scoreData.winner = 'white';
       } else {
         scoreData.winner = 'draw';
       }
@@ -424,15 +434,25 @@ function App() {
     scoreData.playing = -1;
 
     // タイトルを更新
-    const titles: { [key: number]: string[]; } = {
+    const titles: { [key: number]: string[] } = {
       3: ['先鋒', '中堅', '大将'],
       4: ['先鋒', '中堅', '副将', '大将'],
       5: ['先鋒', '次鋒', '中堅', '副将', '大将'],
       6: ['先鋒', '次鋒', '中堅', '三将', '副将', '大将'],
       7: ['先鋒', '次鋒', '五将', '中堅', '三将', '副将', '大将'],
       8: ['先鋒', '次鋒', '六将', '中堅', '四将', '三将', '副将', '大将'],
-      9: ['先鋒', '次鋒', '七将', '六将', '中堅', '四将', '三将', '副将', '大将'],
-    }
+      9: [
+        '先鋒',
+        '次鋒',
+        '七将',
+        '六将',
+        '中堅',
+        '四将',
+        '三将',
+        '副将',
+        '大将',
+      ],
+    };
     settingsData.playerTitles = titles[settingsData.playerCount];
 
     // あふれているスコアがあれば消す

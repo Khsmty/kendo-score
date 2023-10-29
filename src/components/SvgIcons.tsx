@@ -33,7 +33,7 @@ export function SquareSvg(props: Props) {
       fill="none"
       className={props.className}
     >
-      <rect x="3" y="3" width="18" height="18" rx="1" ry="1"></rect>
+      <rect x="3" y="3" width="18" height="18"></rect>
     </svg>
   );
 }
