@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { toJpeg } from 'html-to-image';
 import {
   UsersIcon,
@@ -7,10 +7,6 @@ import {
   AdjustmentsHorizontalIcon,
   ArrowLeftIcon,
   ArrowRightIcon,
-  ExclamationCircleIcon,
-  CheckCircleIcon,
-  InformationCircleIcon,
-  QuestionMarkCircleIcon,
 } from '@heroicons/react/24/solid';
 import {
   settingsAtom,
@@ -18,8 +14,13 @@ import {
   stateAtom,
   scoreAtom,
 } from './scripts/jotai.ts';
-import { CircleSvg, SquareSvg, TriangleSvg } from './components/SvgIcons.tsx';
 import { useAtom } from 'jotai';
+import Scoreboard from './components/Scoreboard.tsx';
+import HelpBtn from './components/HelpBtn.tsx';
+import { ipponTypes, titles } from './scripts/constants.ts';
+import DownloadOverlay from './components/DownloadOverlay.tsx';
+import MessageDialog from './components/MessageDialog.tsx';
+import Toast from './components/Toast.tsx';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
@@ -434,25 +435,6 @@ function App() {
     scoreData.playing = -1;
 
     // タイトルを更新
-    const titles: { [key: number]: string[] } = {
-      3: ['先鋒', '中堅', '大将'],
-      4: ['先鋒', '中堅', '副将', '大将'],
-      5: ['先鋒', '次鋒', '中堅', '副将', '大将'],
-      6: ['先鋒', '次鋒', '中堅', '三将', '副将', '大将'],
-      7: ['先鋒', '次鋒', '五将', '中堅', '三将', '副将', '大将'],
-      8: ['先鋒', '次鋒', '六将', '中堅', '四将', '三将', '副将', '大将'],
-      9: [
-        '先鋒',
-        '次鋒',
-        '七将',
-        '六将',
-        '中堅',
-        '四将',
-        '三将',
-        '副将',
-        '大将',
-      ],
-    };
     settingsData.playerTitles = titles[settingsData.playerCount];
 
     // あふれているスコアがあれば消す
@@ -570,279 +552,7 @@ function App() {
     <div className="flex items-center justify-center">
       <main className="mt-10">
         <div className="bg-white p-3" ref={scoreboardRef}>
-          <table className="h-[345px] table-fixed border-collapse break-all bg-white text-center text-xl">
-            <tbody className="border border-black">
-              {/* タイトル (表1段目) */}
-              <tr className="h-[51px] border-b border-black">
-                <th className="w-[170px] border-r border-black">団体名</th>
-
-                {settingsData.playerTitles.map((title, index) => (
-                  <th
-                    className={
-                      'w-[84px] border-r border-black' +
-                      (scoreData.playing === index ? ' bg-green-300' : '')
-                    }
-                    colSpan={2}
-                    key={index}
-                  >
-                    {title}
-                  </th>
-                ))}
-
-                <th className="w-[80px] border-r border-black" rowSpan={2}>
-                  勝点
-                </th>
-
-                {settingsData.daihyo && (
-                  <th
-                    className={
-                      'w-[84px]' +
-                      (scoreData.playing === 99 ? ' bg-green-300' : '')
-                    }
-                    colSpan={2}
-                  >
-                    代表戦
-                  </th>
-                )}
-              </tr>
-
-              {/* 赤選手名表示セル (表2段目) */}
-              <tr className="border-b border-black">
-                <td
-                  className="h-[147px] w-[170px] border-r border-black bg-red-100 p-3"
-                  rowSpan={3}
-                >
-                  {playersData.red.name || ''}
-                </td>
-
-                {settingsData.playerTitles.map((_title, index) => (
-                  <td
-                    className="h-[63px] border-r border-black bg-red-100"
-                    colSpan={2}
-                    key={index}
-                  >
-                    {playersData.red.players[index]?.name}
-                  </td>
-                ))}
-
-                {settingsData.daihyo && (
-                  <td className="h-[63px] bg-red-100" colSpan={2}>
-                    {playersData.red.daihyo.name}
-                  </td>
-                )}
-              </tr>
-
-              {/* スコア表示セル1段目 (表3段目) */}
-              <tr>
-                {settingsData.playerTitles.map((_title, index) => (
-                  <React.Fragment key={index}>
-                    <td className="relative h-[42px] w-[42px] pb-0.5 pr-0.5 text-right align-bottom text-[2rem]">
-                      {scoreData.score.red?.[index]?.[0]}
-
-                      {playersData.red.players[index]?.first && (
-                        <CircleSvg className="absolute left-0 top-0.5" />
-                      )}
-
-                      {scoreData.draw[index] && (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="100"
-                          height="150"
-                          viewBox="0 0 24 36"
-                          stroke="#000"
-                          strokeWidth="0.6"
-                          strokeLinecap="round"
-                          className="absolute -left-2 top-2"
-                        >
-                          <line x1="18" y1="9" x2="6" y2="27"></line>
-                          <line x1="6" y1="9" x2="18" y2="27"></line>
-                        </svg>
-                      )}
-                    </td>
-                    <td className="h-[42px] w-[42px] border-r border-black pr-1 text-right align-top">
-                      {scoreData.hansoku.red[index] ? '▲' : ''}
-                    </td>
-                  </React.Fragment>
-                ))}
-
-                <td
-                  className="relative border-r border-black text-[1.7rem]"
-                  rowSpan={2}
-                >
-                  <span>{scoreData.ipponCount.red}</span>
-                  <div className="mx-[15%] my-[3px] h-[2px] w-[70%] bg-gray-900" />
-                  <span>{scoreData.winCount.red}</span>
-
-                  {scoreData.winner === 'red' && (
-                    <CircleSvg
-                      className="absolute left-0 top-0.5"
-                      size={80}
-                      strokeWidth={0.5}
-                    />
-                  )}
-                  {scoreData.winner === 'draw' && (
-                    <SquareSvg
-                      className="absolute -left-0.5 top-0"
-                      size={85}
-                      strokeWidth={0.5}
-                    />
-                  )}
-                  {scoreData.winner === 'white' && (
-                    <TriangleSvg
-                      className="absolute -left-0.5 top-0"
-                      size={85}
-                      strokeWidth={0.5}
-                    />
-                  )}
-                </td>
-
-                {settingsData.daihyo && (
-                  <>
-                    <td className="relative h-[42px] w-[42px] pb-0.5 pr-0.5 text-right align-bottom text-[2rem]">
-                      {scoreData.daihyo.score.red[0]}
-
-                      {playersData.red.daihyo.first && (
-                        <CircleSvg className="absolute left-0 top-0.5" />
-                      )}
-                    </td>
-                    <td className="h-[42px] w-[42px] border-r border-black pr-1 text-right align-top">
-                      {scoreData.daihyo.hansoku.red ? '▲' : ''}
-                    </td>
-                  </>
-                )}
-              </tr>
-
-              {/* スコア表示セル2段目 (表4段目) */}
-              <tr className="border-b border-black">
-                {settingsData.playerTitles.map((_title, index) => (
-                  <React.Fragment key={index}>
-                    <td className="h-[42px] w-[42px]"></td>
-                    <td className="h-[42px] w-[42px] border-r border-black pl-0.5 pt-0.5 text-left align-top text-[2rem]">
-                      {scoreData.score.red?.[index]?.[1]}
-                    </td>
-                  </React.Fragment>
-                ))}
-
-                {settingsData.daihyo && (
-                  <>
-                    <td className="h-[42px] w-[42px]"></td>
-                    <td className="h-[42px] w-[42px]"></td>
-                  </>
-                )}
-              </tr>
-
-              {/* スコア表示セル3段目 (表5段目) */}
-              <tr>
-                <td
-                  className="h-[147px] w-[170px] border-r border-black bg-gray-200 p-3"
-                  rowSpan={3}
-                >
-                  {playersData.white.name || ''}
-                </td>
-
-                {settingsData.playerTitles.map((_title, index) => (
-                  <React.Fragment key={index}>
-                    <td className="h-[42px] w-[42px]"></td>
-                    <td className="h-[42px] w-[42px] border-r border-black pb-0.5 pl-0.5 text-left align-bottom text-[2rem]">
-                      {scoreData.score.white?.[index]?.[1]}
-                    </td>
-                  </React.Fragment>
-                ))}
-
-                <td
-                  className="relative border-r border-black text-[1.7rem]"
-                  rowSpan={2}
-                >
-                  <span>{scoreData.ipponCount.white}</span>
-                  <div className="mx-[15%] my-[3px] h-[2px] w-[70%] bg-gray-900" />
-                  <span>{scoreData.winCount.white}</span>
-
-                  {scoreData.winner === 'white' && (
-                    <CircleSvg
-                      className="absolute left-0 top-0.5"
-                      size={80}
-                      strokeWidth={0.5}
-                    />
-                  )}
-                  {scoreData.winner === 'draw' && (
-                    <SquareSvg
-                      className="absolute -left-0.5 top-0"
-                      size={85}
-                      strokeWidth={0.5}
-                    />
-                  )}
-                  {scoreData.winner === 'red' && (
-                    <TriangleSvg
-                      className="absolute -left-0.5 top-0"
-                      size={85}
-                      strokeWidth={0.5}
-                    />
-                  )}
-                </td>
-
-                {settingsData.daihyo && (
-                  <>
-                    <td className="relative h-[42px] w-[42px] pb-0.5 pr-0.5 text-right align-bottom text-[2rem]">
-                      {scoreData.daihyo.score.white[0]}
-
-                      {playersData.white.daihyo.first && (
-                        <CircleSvg className="absolute left-0 top-0.5" />
-                      )}
-                    </td>
-                    <td className="h-[42px] w-[42px] border-r border-black pr-1 text-right align-top">
-                      {scoreData.daihyo.hansoku.white ? '▲' : ''}
-                    </td>
-                  </>
-                )}
-              </tr>
-
-              {/* スコア表示セル4段目 (表6段目) */}
-              <tr className="border-b border-black">
-                {settingsData.playerTitles.map((_title, index) => (
-                  <React.Fragment key={index}>
-                    <td className="relative h-[42px] w-[42px] pr-0.5 pt-0.5 text-right align-top text-[2rem]">
-                      {scoreData.score.white?.[index]?.[0]}
-
-                      {playersData.white.players[index]?.first && (
-                        <CircleSvg className="absolute bottom-0 left-0" />
-                      )}
-                    </td>
-                    <td className="h-[42px] w-[42px] border-r border-black pr-1 text-right align-bottom">
-                      {scoreData.hansoku.white[index] ? '▲' : ''}
-                    </td>
-                  </React.Fragment>
-                ))}
-
-                {settingsData.daihyo && (
-                  <>
-                    <td className="h-[42px] w-[42px]"></td>
-                    <td className="h-[42px] w-[42px]"></td>
-                  </>
-                )}
-              </tr>
-
-              {/* 白選手名表示セル (表7段目) */}
-              <tr>
-                {settingsData.playerTitles.map((_title, index) => (
-                  <td
-                    className="h-[63px] border-r border-black bg-gray-200"
-                    colSpan={2}
-                    key={index}
-                  >
-                    {playersData.white.players[index]?.name}
-                  </td>
-                ))}
-
-                <td className="border-r border-black"></td>
-
-                {settingsData.daihyo && (
-                  <td className="h-[63px] bg-gray-200" colSpan={2}>
-                    {playersData.white.daihyo.name}
-                  </td>
-                )}
-              </tr>
-            </tbody>
-          </table>
+          <Scoreboard />
         </div>
 
         {/* ボタン1段目 */}
@@ -1080,36 +790,17 @@ function App() {
         <div className="mt-7 flex justify-center gap-4 text-center">
           <div className="flex flex-col items-end gap-2">
             <div className="flex gap-2">
-              <button
-                className="btn w-16 bg-red-700 text-white hover:bg-red-800"
-                onClick={() => ippon('コ', 'red')}
-              >
-                コ
-              </button>
-              <button
-                className="btn w-16 bg-red-700 text-white hover:bg-red-800"
-                onClick={() => ippon('ツ', 'red')}
-              >
-                ツ
-              </button>
-              <button
-                className="btn w-16 bg-red-700 text-white hover:bg-red-800"
-                onClick={() => ippon('ド', 'red')}
-              >
-                ド
-              </button>
-              <button
-                className="btn w-16 bg-red-700 text-white hover:bg-red-800"
-                onClick={() => ippon('メ', 'red')}
-              >
-                メ
-              </button>
-              <button
-                className="btn w-16 bg-red-700 text-white hover:bg-red-800"
-                onClick={() => ippon('▲', 'red')}
-              >
-                ▲
-              </button>
+              {ipponTypes.map((type) => {
+                return (
+                  <button
+                    className="btn w-16 bg-red-700 text-white hover:bg-red-800"
+                    key={type}
+                    onClick={() => ippon(type, 'red')}
+                  >
+                    {type}
+                  </button>
+                );
+              })}
             </div>
             <div className="flex gap-2">
               <button
@@ -1128,36 +819,17 @@ function App() {
           </div>
           <div className="flex flex-col items-start gap-2">
             <div className="flex gap-2">
-              <button
-                className="btn w-16 bg-gray-500 text-white hover:bg-gray-400"
-                onClick={() => ippon('コ', 'white')}
-              >
-                コ
-              </button>
-              <button
-                className="btn w-16 bg-gray-500 text-white hover:bg-gray-400"
-                onClick={() => ippon('ツ', 'white')}
-              >
-                ツ
-              </button>
-              <button
-                className="btn w-16 bg-gray-500 text-white hover:bg-gray-400"
-                onClick={() => ippon('ド', 'white')}
-              >
-                ド
-              </button>
-              <button
-                className="btn w-16 bg-gray-500 text-white hover:bg-gray-400"
-                onClick={() => ippon('メ', 'white')}
-              >
-                メ
-              </button>
-              <button
-                className="btn w-16 bg-gray-500 text-white hover:bg-gray-400"
-                onClick={() => ippon('▲', 'white')}
-              >
-                ▲
-              </button>
+              {ipponTypes.map((type) => {
+                return (
+                  <button
+                    className="btn w-16 bg-gray-500 text-white hover:bg-gray-400"
+                    key={type}
+                    onClick={() => ippon(type, 'white')}
+                  >
+                    {type}
+                  </button>
+                );
+              })}
             </div>
             <div className="flex gap-2">
               <button
@@ -1188,96 +860,11 @@ function App() {
           </button>
         </div>
 
-        {/* ダウンロード中ローディングオーバーレイ */}
-        {stateData.isDownloading && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="card w-96 bg-base-100">
-              <div className="card-body flex flex-col items-center text-center">
-                <span className="loading loading-spinner loading-lg text-blue-700"></span>
+        <DownloadOverlay />
+        <MessageDialog />
+        <Toast />
 
-                <h2 className="card-title justify-center">ダウンロード中</h2>
-                <p>
-                  表を画像に変換しています。
-                  <br />
-                  しばらくお待ちください...
-                </p>
-                <p className="text-xs text-gray-600">
-                  ※iPad
-                  など、画面の解像度が高い端末の場合は時間がかかる可能性があります
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* 共通ダイアログ */}
-        <dialog id="message_dialog" className="modal">
-          <form method="dialog" className="modal-box">
-            <h3 className="mb-3 text-lg font-bold">
-              {stateData.messageDialog.type === 'error' && (
-                <div className="flex items-center gap-1">
-                  <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-                  エラー
-                </div>
-              )}
-              {stateData.messageDialog.type === 'info' && (
-                <div className="flex items-center gap-1">
-                  <InformationCircleIcon className="h-5 w-5 text-blue-600" />
-                  メッセージ
-                </div>
-              )}
-              {stateData.messageDialog.type === 'success' && (
-                <div className="flex items-center gap-1">
-                  <CheckCircleIcon className="h-5 w-5 text-green-600" />
-                  成功
-                </div>
-              )}
-            </h3>
-
-            {stateData.messageDialog.message}
-
-            <div className="modal-action">
-              <button className="btn">OK</button>
-            </div>
-          </form>
-          <form method="dialog" className="modal-backdrop">
-            <button>close</button>
-          </form>
-        </dialog>
-
-        {/* 共通トースト */}
-        {stateData.toast.show && (
-          <div className="toast toast-center">
-            <div className="alert max-w-[90vw] gap-2 bg-gray-800 text-white">
-              <InformationCircleIcon className="h-5 w-5" />
-              <span>{stateData.toast.message}</span>
-              <div>
-                <button
-                  className="btn btn-sm"
-                  onClick={() =>
-                    setStateData({
-                      ...stateData,
-                      toast: { show: false, message: '' },
-                    })
-                  }
-                >
-                  OK
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        <div className="absolute bottom-4 right-4">
-          <a
-            href="https://cms.taigasaito.org/kendo-score"
-            target="_blank"
-            className="btn btn-sm gap-1"
-          >
-            <QuestionMarkCircleIcon className="h-4 w-4" />
-            ヘルプ
-          </a>
-        </div>
+        <HelpBtn />
       </main>
     </div>
   );
