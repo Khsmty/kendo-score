@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import { toJpeg } from 'html-to-image';
 import {
   UsersIcon,
@@ -12,31 +12,24 @@ import {
   InformationCircleIcon,
   QuestionMarkCircleIcon,
 } from '@heroicons/react/24/solid';
+import {
+  settingsAtom,
+  playersAtom,
+  stateAtom,
+  scoreAtom,
+} from './scripts/jotai.ts';
+import { CircleSvg, SquareSvg, TriangleSvg } from './components/SvgIcons.tsx';
+import { useAtom } from 'jotai';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
 import { useRegisterSW } from 'virtual:pwa-register/react';
 
-import {
-  initSettingsData,
-  initPlayersData,
-  initScoreData,
-} from './scripts/initData.ts';
-import { CircleSvg, SquareSvg, TriangleSvg } from './components/SvgIcons.tsx';
-
 function App() {
-  const [settingsData, setSettingsData] = useState(initSettingsData);
-  const [playersData, setPlayersData] = useState(initPlayersData);
-  const [scoreData, setScoreData] = useState(initScoreData);
-  const [isDownloading, setIsDownloading] = useState(false);
-  const [messageDialog, setMessageDialog] = useState({
-    type: 'info' as 'error' | 'info' | 'success',
-    message: '',
-  });
-  const [toast, setToast] = useState({
-    show: false,
-    message: '',
-  });
+  const [settingsData, setSettingsData] = useAtom(settingsAtom);
+  const [playersData, setPlayersData] = useAtom(playersAtom);
+  const [scoreData, setScoreData] = useAtom(scoreAtom);
+  const [stateData, setStateData] = useAtom(stateAtom);
 
   useRegisterSW({
     onOfflineReady() {
@@ -52,9 +45,12 @@ function App() {
     type: 'error' | 'info' | 'success',
     message: string,
   ) {
-    setMessageDialog({
-      type,
-      message,
+    setStateData({
+      ...stateData,
+      messageDialog: {
+        type,
+        message,
+      },
     });
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -63,9 +59,12 @@ function App() {
   }
 
   function showToast(message: string) {
-    setToast({
-      show: true,
-      message,
+    setStateData({
+      ...stateData,
+      toast: {
+        show: true,
+        message,
+      },
     });
   }
 
@@ -470,7 +469,7 @@ function App() {
 
   function reset(type: 'score' | 'players' | 'all') {
     if (type === 'score' || type === 'players' || type === 'all') {
-      // TODO: 本当は initScoreData を使いたい
+      // TODO: 本当は useResetAtom を使いたい
       setScoreData((prevState) => ({
         ...prevState,
         playing: -1,
@@ -517,7 +516,7 @@ function App() {
       setPlayersData({ ...playersData });
     }
     if (type === 'players' || type === 'all') {
-      // TODO: 本当は initPlayersData を使いたい
+      // TODO: 本当は useResetAtom を使いたい
       setPlayersData((prevState) => ({
         ...prevState,
         red: {
@@ -533,7 +532,7 @@ function App() {
       }));
     }
     if (type === 'all') {
-      // TODO: 本当は initSettingsData を使いたい
+      // TODO: 本当は useResetAtom を使いたい
       setSettingsData((prevState) => ({
         ...prevState,
         playerCount: 5,
@@ -551,11 +550,10 @@ function App() {
         'error',
         '対戦が進行中です。[次選手へ] を押して終了させてください。',
       );
-      setIsDownloading(false);
       return;
     }
 
-    setIsDownloading(true);
+    setStateData({ ...stateData, isDownloading: true });
 
     const element = scoreboardRef.current;
     const toImg = await toJpeg(element!);
@@ -565,7 +563,7 @@ function App() {
     link.href = toImg;
     link.click();
 
-    setIsDownloading(false);
+    setStateData({ ...stateData, isDownloading: false });
   }
 
   return (
@@ -990,10 +988,7 @@ function App() {
                           －
                         </button>
                         <input
-                          className="input join-item input-bordered w-14"
-                          type="number"
-                          min={3}
-                          max={9}
+                          className="input join-item input-bordered w-14 text-center"
                           value={settingsData.playerCount}
                           onChange={(e) =>
                             updatePlayerCount('custom', Number(e.target.value))
@@ -1086,31 +1081,31 @@ function App() {
           <div className="flex flex-col items-end gap-2">
             <div className="flex gap-2">
               <button
-                className="btn w-16 bg-red-700 text-white"
+                className="btn w-16 bg-red-700 text-white hover:bg-red-800"
                 onClick={() => ippon('コ', 'red')}
               >
                 コ
               </button>
               <button
-                className="btn w-16 bg-red-700 text-white"
+                className="btn w-16 bg-red-700 text-white hover:bg-red-800"
                 onClick={() => ippon('ツ', 'red')}
               >
                 ツ
               </button>
               <button
-                className="btn w-16 bg-red-700 text-white"
+                className="btn w-16 bg-red-700 text-white hover:bg-red-800"
                 onClick={() => ippon('ド', 'red')}
               >
                 ド
               </button>
               <button
-                className="btn w-16 bg-red-700 text-white"
+                className="btn w-16 bg-red-700 text-white hover:bg-red-800"
                 onClick={() => ippon('メ', 'red')}
               >
                 メ
               </button>
               <button
-                className="btn w-16 bg-red-700 text-white"
+                className="btn w-16 bg-red-700 text-white hover:bg-red-800"
                 onClick={() => ippon('▲', 'red')}
               >
                 ▲
@@ -1118,13 +1113,13 @@ function App() {
             </div>
             <div className="flex gap-2">
               <button
-                className="btn bg-red-700 text-white"
+                className="btn bg-red-700 text-white hover:bg-red-800"
                 onClick={() => ippon('○', 'red')}
               >
                 不戦勝
               </button>
               <button
-                className="btn bg-red-700 text-white"
+                className="btn bg-red-700 text-white hover:bg-red-800"
                 onClick={() => revert('red')}
               >
                 取消
@@ -1134,31 +1129,31 @@ function App() {
           <div className="flex flex-col items-start gap-2">
             <div className="flex gap-2">
               <button
-                className="btn w-16 bg-gray-500 text-white"
+                className="btn w-16 bg-gray-500 text-white hover:bg-gray-400"
                 onClick={() => ippon('コ', 'white')}
               >
                 コ
               </button>
               <button
-                className="btn w-16 bg-gray-500 text-white"
+                className="btn w-16 bg-gray-500 text-white hover:bg-gray-400"
                 onClick={() => ippon('ツ', 'white')}
               >
                 ツ
               </button>
               <button
-                className="btn w-16 bg-gray-500 text-white"
+                className="btn w-16 bg-gray-500 text-white hover:bg-gray-400"
                 onClick={() => ippon('ド', 'white')}
               >
                 ド
               </button>
               <button
-                className="btn w-16 bg-gray-500 text-white"
+                className="btn w-16 bg-gray-500 text-white hover:bg-gray-400"
                 onClick={() => ippon('メ', 'white')}
               >
                 メ
               </button>
               <button
-                className="btn w-16 bg-gray-500 text-white"
+                className="btn w-16 bg-gray-500 text-white hover:bg-gray-400"
                 onClick={() => ippon('▲', 'white')}
               >
                 ▲
@@ -1166,13 +1161,13 @@ function App() {
             </div>
             <div className="flex gap-2">
               <button
-                className="btn bg-gray-500 text-white"
+                className="btn bg-gray-500 text-white hover:bg-gray-400"
                 onClick={() => ippon('○', 'white')}
               >
                 不戦勝
               </button>
               <button
-                className="btn bg-gray-500 text-white"
+                className="btn bg-gray-500 text-white hover:bg-gray-400"
                 onClick={() => revert('white')}
               >
                 取消
@@ -1194,7 +1189,7 @@ function App() {
         </div>
 
         {/* ダウンロード中ローディングオーバーレイ */}
-        {isDownloading && (
+        {stateData.isDownloading && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
             <div className="card w-96 bg-base-100">
               <div className="card-body flex flex-col items-center text-center">
@@ -1219,19 +1214,19 @@ function App() {
         <dialog id="message_dialog" className="modal">
           <form method="dialog" className="modal-box">
             <h3 className="mb-3 text-lg font-bold">
-              {messageDialog.type === 'error' && (
+              {stateData.messageDialog.type === 'error' && (
                 <div className="flex items-center gap-1">
                   <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
                   エラー
                 </div>
               )}
-              {messageDialog.type === 'info' && (
+              {stateData.messageDialog.type === 'info' && (
                 <div className="flex items-center gap-1">
                   <InformationCircleIcon className="h-5 w-5 text-blue-600" />
                   メッセージ
                 </div>
               )}
-              {messageDialog.type === 'success' && (
+              {stateData.messageDialog.type === 'success' && (
                 <div className="flex items-center gap-1">
                   <CheckCircleIcon className="h-5 w-5 text-green-600" />
                   成功
@@ -1239,7 +1234,7 @@ function App() {
               )}
             </h3>
 
-            {messageDialog.message}
+            {stateData.messageDialog.message}
 
             <div className="modal-action">
               <button className="btn">OK</button>
@@ -1251,15 +1246,20 @@ function App() {
         </dialog>
 
         {/* 共通トースト */}
-        {toast.show && (
+        {stateData.toast.show && (
           <div className="toast toast-center">
             <div className="alert max-w-[90vw] gap-2 bg-gray-800 text-white">
               <InformationCircleIcon className="h-5 w-5" />
-              <span>{toast.message}</span>
+              <span>{stateData.toast.message}</span>
               <div>
                 <button
                   className="btn btn-sm"
-                  onClick={() => setToast({ show: false, message: '' })}
+                  onClick={() =>
+                    setStateData({
+                      ...stateData,
+                      toast: { show: false, message: '' },
+                    })
+                  }
                 >
                   OK
                 </button>

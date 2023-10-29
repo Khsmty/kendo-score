@@ -1,16 +1,19 @@
-type SettingsData = {
+import { atom } from 'jotai';
+import { atomWithReset } from 'jotai/utils';
+
+interface SettingsAtom {
   playerCount: number;
   playerTitles: string[];
   daihyo: boolean;
-};
+}
 
-export const initSettingsData: SettingsData = {
+export const settingsAtom = atomWithReset<SettingsAtom>({
   playerCount: 5,
   playerTitles: ['先鋒', '次鋒', '中堅', '副将', '大将'],
   daihyo: true,
-};
+});
 
-type PlayersData = {
+interface PlayersAtom {
   red: {
     name: string;
     players: { name: string; first: boolean }[];
@@ -21,9 +24,9 @@ type PlayersData = {
     players: { name: string; first: boolean }[];
     daihyo: { name: string; first: boolean };
   };
-};
+}
 
-export const initPlayersData: PlayersData = {
+export const playersAtom = atomWithReset<PlayersAtom>({
   red: {
     name: '',
     players: [],
@@ -34,9 +37,9 @@ export const initPlayersData: PlayersData = {
     players: [],
     daihyo: { name: '', first: false },
   },
-};
+});
 
-type ScoreData = {
+interface ScoreAtom {
   // -1: 対戦開始前, 99: 代表戦, 100: 対戦終了
   playing: number;
   score: {
@@ -67,9 +70,9 @@ type ScoreData = {
   };
   draw: boolean[];
   winner: 'red' | 'white' | 'draw' | '';
-};
+}
 
-export const initScoreData: ScoreData = {
+export const scoreAtom = atomWithReset<ScoreAtom>({
   playing: -1,
   score: {
     red: [],
@@ -99,4 +102,28 @@ export const initScoreData: ScoreData = {
   },
   draw: [],
   winner: '',
-};
+});
+
+interface StateAtom {
+  isDownloading: boolean;
+  messageDialog: {
+    type: 'error' | 'info' | 'success';
+    message: string;
+  };
+  toast: {
+    show: boolean;
+    message: string;
+  };
+}
+
+export const stateAtom = atom<StateAtom>({
+  isDownloading: false,
+  messageDialog: {
+    type: 'info',
+    message: '',
+  },
+  toast: {
+    show: false,
+    message: '',
+  },
+});
