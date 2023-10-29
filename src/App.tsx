@@ -10,6 +10,7 @@ import {
   ExclamationCircleIcon,
   CheckCircleIcon,
   InformationCircleIcon,
+  QuestionMarkCircleIcon,
 } from '@heroicons/react/24/solid';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -1266,6 +1267,17 @@ function App() {
             </div>
           </div>
         )}
+
+        <div className="absolute bottom-4 right-4">
+          <a
+            href="https://cms.taigasaito.org/kendo-score"
+            target="_blank"
+            className="btn btn-sm gap-1"
+          >
+            <QuestionMarkCircleIcon className="h-4 w-4" />
+            ヘルプ
+          </a>
+        </div>
       </main>
     </div>
   );
