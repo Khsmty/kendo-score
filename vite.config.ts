@@ -8,6 +8,42 @@ export default defineConfig({
     react({ plugins: [['@swc-jotai/react-refresh', {}]] }),
     VitePWA({
       registerType: 'autoUpdate',
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+      manifest: {
+        name: '剣道スコア表',
+        short_name: '剣道スコア表',
+        description: '剣道のスコア表を PC やスマホ上でつけられるアプリ',
+        theme_color: '#ffffff',
+        background_color: '#ffffff',
+        start_url: '/',
+        display: 'standalone',
+        icons: [
+          {
+            src: '/pwa-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
+            purpose: 'any',
+          },
+          {
+            src: '/pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any',
+          },
+          {
+            src: '/pwa-maskable-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
+            purpose: 'maskable',
+          },
+          {
+            src: '/pwa-maskable-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable',
+          },
+        ],
+      },
       workbox: {
         runtimeCaching: [
           {
