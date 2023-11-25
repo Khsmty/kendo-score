@@ -549,7 +549,7 @@ function App() {
   }
 
   return (
-    <div className="flex items-center justify-center">
+    <div className="flex touch-none items-center justify-center">
       <main className="mt-10">
         <div className="bg-white p-3" ref={scoreboardRef}>
           <Scoreboard />
