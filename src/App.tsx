@@ -549,82 +549,83 @@ function App() {
   }
 
   return (
-    <div className="flex touch-none items-center justify-center">
-      <main className="mt-10">
-        <div className="bg-white p-3" ref={scoreboardRef}>
-          <Scoreboard />
-        </div>
+    <div className="flex min-h-[100svh] touch-manipulation flex-col items-center justify-center py-3">
+      <div
+        className="max-w-[100vw] overflow-x-auto bg-white p-3"
+        ref={scoreboardRef}
+      >
+        <Scoreboard />
+      </div>
 
-        {/* ボタン1段目 */}
-        <div className="mt-5 flex justify-center gap-4 text-center">
-          <button
-            className="btn"
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
-            onClick={() => window.player_modal.showModal()}
-          >
-            <UsersIcon className="h-5 w-5" />
-            選手名入力
-          </button>
-          <button
-            className="btn"
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
-            onClick={() => window.config_modal.showModal()}
-          >
-            <AdjustmentsHorizontalIcon className="h-5 w-5" />
-            表設定変更
-          </button>
-          <button
-            className="btn"
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
-            onClick={() => window.reset_modal.showModal()}
-          >
-            <ArrowPathIcon className="h-5 w-5" />
-            リセット
-          </button>
-          <button className="btn" onClick={downloadImg}>
-            <ArrowDownTrayIcon className="h-5 w-5" />
-            ダウンロード
-          </button>
+      {/* ボタン1段目 */}
+      <div className="mt-5 flex flex-wrap justify-center gap-4 text-center">
+        <button
+          className="btn"
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-expect-error
+          onClick={() => window.player_modal.showModal()}
+        >
+          <UsersIcon className="h-5 w-5" />
+          選手名入力
+        </button>
+        <button
+          className="btn"
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-expect-error
+          onClick={() => window.config_modal.showModal()}
+        >
+          <AdjustmentsHorizontalIcon className="h-5 w-5" />
+          表設定変更
+        </button>
+        <button
+          className="btn"
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-expect-error
+          onClick={() => window.reset_modal.showModal()}
+        >
+          <ArrowPathIcon className="h-5 w-5" />
+          リセット
+        </button>
+        <button className="btn" onClick={downloadImg}>
+          <ArrowDownTrayIcon className="h-5 w-5" />
+          ダウンロード
+        </button>
 
-          {/* 選手名入力ダイアログ */}
-          <dialog id="player_modal" className="modal">
-            <form method="dialog" className="modal-box max-w-[700px]">
-              <h3 className="mb-5 text-lg font-bold">選手名入力</h3>
+        {/* 選手名入力ダイアログ */}
+        <dialog id="player_modal" className="modal">
+          <form method="dialog" className="modal-box max-w-[700px]">
+            <h3 className="mb-5 text-lg font-bold">選手名入力</h3>
+            <hr className="mb-5 border-b-gray-400 lg:hidden" />
 
-              <div className="flex flex-col gap-5">
-                <div className="flex items-center justify-center gap-3">
-                  <input
-                    className="input input-error w-64"
-                    value={playersData.red.name}
-                    onChange={(e) =>
-                      setPlayersData({
-                        ...playersData,
-                        red: { ...playersData.red, name: e.target.value },
-                      })
-                    }
-                  />
-                  <span className="w-16 text-lg">団体名</span>
-                  <input
-                    className="input input-bordered w-64"
-                    value={playersData.white.name}
-                    onChange={(e) =>
-                      setPlayersData({
-                        ...playersData,
-                        white: { ...playersData.white, name: e.target.value },
-                      })
-                    }
-                  />
-                </div>
-                <hr className="border-b-gray-400" />
+            <div className="flex flex-col gap-5">
+              <div className="flex flex-col items-center justify-center gap-3 lg:flex-row">
+                <input
+                  className="input input-error w-64"
+                  value={playersData.red.name}
+                  onChange={(e) =>
+                    setPlayersData({
+                      ...playersData,
+                      red: { ...playersData.red, name: e.target.value },
+                    })
+                  }
+                />
+                <span className="w-16 text-lg">団体名</span>
+                <input
+                  className="input input-bordered w-64"
+                  value={playersData.white.name}
+                  onChange={(e) =>
+                    setPlayersData({
+                      ...playersData,
+                      white: { ...playersData.white, name: e.target.value },
+                    })
+                  }
+                />
+              </div>
+              <hr className="border-b-gray-400" />
 
-                {settingsData.playerTitles.map((title, index) => (
-                  <div
-                    className="flex items-center justify-center gap-3"
-                    key={index}
-                  >
+              {settingsData.playerTitles.map((title, index) => (
+                <div key={index}>
+                  <div className="flex flex-col items-center justify-center gap-3 lg:flex-row">
                     <input
                       className="input input-error w-64"
                       value={playersData.red.players[index]?.name || ''}
@@ -641,231 +642,232 @@ function App() {
                       }
                     />
                   </div>
-                ))}
+                  <hr className="border-b-gray-400 lg:hidden" />
+                </div>
+              ))}
 
-                {settingsData.daihyo && (
-                  <>
-                    <hr className="border-b-gray-400" />
-                    <div className="flex items-center justify-center gap-3">
+              {settingsData.daihyo && (
+                <>
+                  <hr className="hidden border-b-gray-400 lg:block" />
+                  <div className="flex flex-col items-center justify-center gap-3 lg:flex-row">
+                    <input
+                      className="input input-error w-64"
+                      value={playersData.red.daihyo.name}
+                      onChange={(e) =>
+                        updatePlayerName('red', 99, e.target.value)
+                      }
+                    />
+                    <span className="w-16 text-lg">代表戦</span>
+                    <input
+                      className="input input-bordered w-64"
+                      value={playersData.white.daihyo.name}
+                      onChange={(e) =>
+                        updatePlayerName('white', 99, e.target.value)
+                      }
+                    />
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="modal-action">
+              <button className="btn">閉じる</button>
+            </div>
+          </form>
+          <form method="dialog" className="modal-backdrop">
+            <button>close</button>
+          </form>
+        </dialog>
+
+        {/* 表設定変更ダイアログ */}
+        <dialog id="config_modal" className="modal">
+          <form method="dialog" className="modal-box">
+            <h3 className="text-lg font-bold">表設定変更</h3>
+            <span className="text-sm text-gray-500">
+              スコア入力後に変更すると、表が崩れる場合があります。
+            </span>
+
+            <table className="table mt-5 w-full">
+              <tbody>
+                <tr>
+                  <td className="text-right text-base">選手人数 (3~9人)</td>
+                  <td className="w-1/2">
+                    <div className="join">
+                      <button
+                        className="btn join-item"
+                        type="button"
+                        onClick={() => updatePlayerCount('decrement')}
+                      >
+                        －
+                      </button>
                       <input
-                        className="input input-error w-64"
-                        value={playersData.red.daihyo.name}
+                        className="input join-item input-bordered w-14 text-center"
+                        value={settingsData.playerCount}
                         onChange={(e) =>
-                          updatePlayerName('red', 99, e.target.value)
+                          updatePlayerCount('custom', Number(e.target.value))
                         }
                       />
-                      <span className="w-16 text-lg">代表戦</span>
-                      <input
-                        className="input input-bordered w-64"
-                        value={playersData.white.daihyo.name}
-                        onChange={(e) =>
-                          updatePlayerName('white', 99, e.target.value)
-                        }
-                      />
+                      <button
+                        className="btn join-item"
+                        type="button"
+                        onClick={() => updatePlayerCount('increment')}
+                      >
+                        ＋
+                      </button>
                     </div>
-                  </>
-                )}
-              </div>
+                  </td>
+                </tr>
 
-              <div className="modal-action">
-                <button className="btn">閉じる</button>
-              </div>
-            </form>
-            <form method="dialog" className="modal-backdrop">
-              <button>close</button>
-            </form>
-          </dialog>
-
-          {/* 表設定変更ダイアログ */}
-          <dialog id="config_modal" className="modal">
-            <form method="dialog" className="modal-box">
-              <h3 className="text-lg font-bold">表設定変更</h3>
-              <span className="text-sm text-gray-500">
-                スコア入力後に変更すると、表が崩れる場合があります。
-              </span>
-
-              <table className="table mt-5 w-full">
-                <tbody>
-                  <tr>
-                    <td className="text-right text-base">選手人数 (3~9人)</td>
-                    <td className="w-1/2">
-                      <div className="join">
-                        <button
-                          className="btn join-item"
-                          type="button"
-                          onClick={() => updatePlayerCount('decrement')}
-                        >
-                          －
-                        </button>
+                <tr>
+                  <td className="text-right text-base">代表戦</td>
+                  <td>
+                    <div className="form-control">
+                      <label className="label cursor-pointer">
                         <input
-                          className="input join-item input-bordered w-14 text-center"
-                          value={settingsData.playerCount}
+                          type="checkbox"
+                          className="toggle"
+                          checked={settingsData.daihyo}
                           onChange={(e) =>
-                            updatePlayerCount('custom', Number(e.target.value))
+                            setSettingsData({
+                              ...settingsData,
+                              daihyo: e.target.checked,
+                            })
                           }
                         />
-                        <button
-                          className="btn join-item"
-                          type="button"
-                          onClick={() => updatePlayerCount('increment')}
-                        >
-                          ＋
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
+                      </label>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
 
-                  <tr>
-                    <td className="text-right text-base">代表戦</td>
-                    <td>
-                      <div className="form-control">
-                        <label className="label cursor-pointer">
-                          <input
-                            type="checkbox"
-                            className="toggle"
-                            checked={settingsData.daihyo}
-                            onChange={(e) =>
-                              setSettingsData({
-                                ...settingsData,
-                                daihyo: e.target.checked,
-                              })
-                            }
-                          />
-                        </label>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-
-              <div className="modal-action">
-                <button className="btn">閉じる</button>
-              </div>
-            </form>
-            <form method="dialog" className="modal-backdrop">
-              <button>close</button>
-            </form>
-          </dialog>
-
-          {/* リセットダイアログ */}
-          <dialog id="reset_modal" className="modal">
-            <form method="dialog" className="modal-box">
-              <h3 className="text-lg font-bold">リセット</h3>
-              <span className="text-sm text-gray-500">
-                リセットすると元に戻せません。注意して実行してください。
-              </span>
-
-              <div className="mt-5 flex flex-col gap-2">
-                <button
-                  className="btn btn-error btn-block"
-                  onClick={() => reset('score')}
-                >
-                  スコアのみリセット
-                </button>
-                <button
-                  className="btn btn-error btn-block"
-                  onClick={() => reset('players')}
-                >
-                  スコアと選手名をリセット
-                </button>
-                <button
-                  className="btn btn-error btn-block"
-                  onClick={() => reset('all')}
-                >
-                  すべてリセット
-                </button>
-              </div>
-
-              <div className="modal-action">
-                <button className="btn">キャンセル</button>
-              </div>
-            </form>
-            <form method="dialog" className="modal-backdrop">
-              <button>close</button>
-            </form>
-          </dialog>
-        </div>
-
-        {/* スコア入力ボタン (ボタン2段目) */}
-        <div className="mt-7 flex justify-center gap-4 text-center">
-          <div className="flex flex-col items-end gap-2">
-            <div className="flex gap-2">
-              {ipponTypes.map((type) => {
-                return (
-                  <button
-                    className="btn w-16 bg-red-700 text-white hover:bg-red-800"
-                    key={type}
-                    onClick={() => ippon(type, 'red')}
-                  >
-                    {type}
-                  </button>
-                );
-              })}
+            <div className="modal-action">
+              <button className="btn">閉じる</button>
             </div>
-            <div className="flex gap-2">
+          </form>
+          <form method="dialog" className="modal-backdrop">
+            <button>close</button>
+          </form>
+        </dialog>
+
+        {/* リセットダイアログ */}
+        <dialog id="reset_modal" className="modal">
+          <form method="dialog" className="modal-box">
+            <h3 className="text-lg font-bold">リセット</h3>
+            <span className="text-sm text-gray-500">
+              リセットすると元に戻せません。注意して実行してください。
+            </span>
+
+            <div className="mt-5 flex flex-col gap-2">
               <button
-                className="btn bg-red-700 text-white hover:bg-red-800"
-                onClick={() => ippon('○', 'red')}
+                className="btn btn-error btn-block"
+                onClick={() => reset('score')}
               >
-                不戦勝
+                スコアのみリセット
               </button>
               <button
-                className="btn bg-red-700 text-white hover:bg-red-800"
-                onClick={() => revert('red')}
+                className="btn btn-error btn-block"
+                onClick={() => reset('players')}
               >
-                取消
+                スコアと選手名をリセット
+              </button>
+              <button
+                className="btn btn-error btn-block"
+                onClick={() => reset('all')}
+              >
+                すべてリセット
               </button>
             </div>
+
+            <div className="modal-action">
+              <button className="btn">キャンセル</button>
+            </div>
+          </form>
+          <form method="dialog" className="modal-backdrop">
+            <button>close</button>
+          </form>
+        </dialog>
+      </div>
+
+      {/* スコア入力ボタン (ボタン2段目) */}
+      <div className="mt-7 flex flex-col justify-center gap-4 text-center lg:flex-row">
+        <div className="flex flex-col items-center gap-2 lg:items-end">
+          <div className="flex gap-2">
+            {ipponTypes.map((type) => {
+              return (
+                <button
+                  className="btn w-16 bg-red-700 text-white hover:bg-red-800"
+                  key={type}
+                  onClick={() => ippon(type, 'red')}
+                >
+                  {type}
+                </button>
+              );
+            })}
           </div>
-          <div className="flex flex-col items-start gap-2">
-            <div className="flex gap-2">
-              {ipponTypes.map((type) => {
-                return (
-                  <button
-                    className="btn w-16 bg-gray-500 text-white hover:bg-gray-400"
-                    key={type}
-                    onClick={() => ippon(type, 'white')}
-                  >
-                    {type}
-                  </button>
-                );
-              })}
-            </div>
-            <div className="flex gap-2">
-              <button
-                className="btn bg-gray-500 text-white hover:bg-gray-400"
-                onClick={() => ippon('○', 'white')}
-              >
-                不戦勝
-              </button>
-              <button
-                className="btn bg-gray-500 text-white hover:bg-gray-400"
-                onClick={() => revert('white')}
-              >
-                取消
-              </button>
-            </div>
+          <div className="flex gap-2">
+            <button
+              className="btn bg-red-700 text-white hover:bg-red-800"
+              onClick={() => ippon('○', 'red')}
+            >
+              不戦勝
+            </button>
+            <button
+              className="btn bg-red-700 text-white hover:bg-red-800"
+              onClick={() => revert('red')}
+            >
+              取消
+            </button>
           </div>
         </div>
-
-        {/* 選手切り替えボタン (ボタン3段目) */}
-        <div className="my-7 flex justify-center gap-4 text-center">
-          <button className="btn" onClick={() => changePlayer('prev')}>
-            <ArrowLeftIcon className="h-5 w-5" />
-            前選手へ
-          </button>
-          <button className="btn" onClick={() => changePlayer('next')}>
-            次選手へ
-            <ArrowRightIcon className="h-5 w-5" />
-          </button>
+        <div className="flex flex-col items-center gap-2 lg:items-start">
+          <div className="flex gap-2">
+            {ipponTypes.map((type) => {
+              return (
+                <button
+                  className="btn w-16 bg-gray-500 text-white hover:bg-gray-400"
+                  key={type}
+                  onClick={() => ippon(type, 'white')}
+                >
+                  {type}
+                </button>
+              );
+            })}
+          </div>
+          <div className="flex gap-2">
+            <button
+              className="btn bg-gray-500 text-white hover:bg-gray-400"
+              onClick={() => ippon('○', 'white')}
+            >
+              不戦勝
+            </button>
+            <button
+              className="btn bg-gray-500 text-white hover:bg-gray-400"
+              onClick={() => revert('white')}
+            >
+              取消
+            </button>
+          </div>
         </div>
+      </div>
 
-        <DownloadOverlay />
-        <MessageDialog />
-        <Toast />
+      {/* 選手切り替えボタン (ボタン3段目) */}
+      <div className="my-7 flex justify-center gap-4 text-center">
+        <button className="btn" onClick={() => changePlayer('prev')}>
+          <ArrowLeftIcon className="h-5 w-5" />
+          前選手へ
+        </button>
+        <button className="btn" onClick={() => changePlayer('next')}>
+          次選手へ
+          <ArrowRightIcon className="h-5 w-5" />
+        </button>
+      </div>
 
-        <HelpBtn />
-      </main>
+      <DownloadOverlay />
+      <MessageDialog />
+      <Toast />
+
+      <HelpBtn />
     </div>
   );
 }

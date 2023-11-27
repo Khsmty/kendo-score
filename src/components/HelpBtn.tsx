@@ -2,7 +2,7 @@ import { QuestionMarkCircleIcon } from '@heroicons/react/24/solid';
 
 export default function HelpBtn() {
   return (
-    <div className="absolute bottom-4 right-4">
+    <div className="fixed bottom-4 right-4">
       <a
         href="https://cms.taigasaito.org/kendo-score"
         target="_blank"
