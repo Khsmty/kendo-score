@@ -15,14 +15,11 @@ dependencies:
     specifier: ^1.11.11
     version: 1.11.11
   jotai:
-    specifier: ^2.5.0
-    version: 2.5.0(@types/react@18.2.33)(react@18.2.0)
+    specifier: ^2.6.0
+    version: 2.6.0(@types/react@18.2.33)(react@18.2.0)
   prettier:
-    specifier: ^3.0.1
-    version: 3.0.3
-  prettier-plugin-tailwindcss:
-    specifier: ^0.5.2
-    version: 0.5.6(prettier@3.0.3)
+    specifier: ^3.1.0
+    version: 3.1.0
   react:
     specifier: ^18.2.0
     version: 18.2.0
@@ -56,8 +53,8 @@ devDependencies:
     specifier: ^10.4.14
     version: 10.4.16(postcss@8.4.31)
   daisyui:
-    specifier: ^4.0.0
-    version: 4.0.1(postcss@8.4.31)
+    specifier: ^4.4.10
+    version: 4.4.10(postcss@8.4.31)
   eslint:
     specifier: ^8.45.0
     version: 8.52.0
@@ -65,11 +62,14 @@ devDependencies:
     specifier: ^4.6.0
     version: 4.6.0(eslint@8.52.0)
   eslint-plugin-react-refresh:
-    specifier: ^0.4.3
-    version: 0.4.3(eslint@8.52.0)
+    specifier: ^0.4.4
+    version: 0.4.4(eslint@8.52.0)
   postcss:
     specifier: ^8.4.27
     version: 8.4.31
+  prettier-plugin-tailwindcss:
+    specifier: ^0.5.7
+    version: 0.5.7(prettier@3.1.0)
   tailwindcss:
     specifier: ^3.3.3
     version: 3.3.5
@@ -2265,8 +2265,8 @@ packages:
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
     dev: true
 
-  /daisyui@4.0.1(postcss@8.4.31):
-    resolution: {integrity: sha512-ImgJOvcWjcK7jepOeP3T/WQZQ/kRF2YCwQPGIjto5URjdMhcr1xOctOZUz50/CYlAI2nYKJ1Y3r+Iznk0hMFCA==}
+  /daisyui@4.4.10(postcss@8.4.31):
+    resolution: {integrity: sha512-NGDsOLtCQ9UzfeOUlKn1lwneQte4UoINmAaDBcrMAbZviu/jWm7PSR9DqH3eE/AY/TpkImdAPVK+kGsZlpEFkQ==}
     engines: {node: '>=16.9.0'}
     dependencies:
       css-selector-tokenizer: 0.8.0
@@ -2469,8 +2469,8 @@ packages:
       eslint: 8.52.0
     dev: true
 
-  /eslint-plugin-react-refresh@0.4.3(eslint@8.52.0):
-    resolution: {integrity: sha512-Hh0wv8bUNY877+sI0BlCUlsS0TYYQqvzEwJsJJPM2WF4RnTStSnSR3zdJYa2nPOJgg3UghXi54lVyMSmpCalzA==}
+  /eslint-plugin-react-refresh@0.4.4(eslint@8.52.0):
+    resolution: {integrity: sha512-eD83+65e8YPVg6603Om2iCIwcQJf/y7++MWm4tACtEswFLYMwxwVWAfwN+e19f5Ad/FOyyNg9Dfi5lXhH3Y3rA==}
     peerDependencies:
       eslint: '>=7'
     dependencies:
@@ -3042,8 +3042,8 @@ packages:
     hasBin: true
     dev: true
 
-  /jotai@2.5.0(@types/react@18.2.33)(react@18.2.0):
-    resolution: {integrity: sha512-iPJDFrhNw3KU4o4SSAESeZoW+nM1L/76VULXZWF23qmivBEcbAQjiF5n1W4Hn5dXAol4tmtEYe4HH7d9emEz0Q==}
+  /jotai@2.6.0(@types/react@18.2.33)(react@18.2.0):
+    resolution: {integrity: sha512-Vt6hsc04Km4j03l+Ax+Sc+FVft5cRJhqgxt6GTz6GM2eM3DyX3CdBdzcG0z2FrlZToL1/0OAkqDghIyARWnSuQ==}
     engines: {node: '>=12.20.0'}
     peerDependencies:
       '@types/react': '>=17.0.0'
@@ -3420,8 +3420,8 @@ packages:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
 
-  /prettier-plugin-tailwindcss@0.5.6(prettier@3.0.3):
-    resolution: {integrity: sha512-2Xgb+GQlkPAUCFi3sV+NOYcSI5XgduvDBL2Zt/hwJudeKXkyvRS65c38SB0yb9UB40+1rL83I6m0RtlOQ8eHdg==}
+  /prettier-plugin-tailwindcss@0.5.7(prettier@3.1.0):
+    resolution: {integrity: sha512-4v6uESAgwCni6YF6DwJlRaDjg9Z+al5zM4JfngcazMy4WEf/XkPS5TEQjbD+DZ5iNuG6RrKQLa/HuX2SYzC3kQ==}
     engines: {node: '>=14.21.3'}
     peerDependencies:
       '@ianvs/prettier-plugin-sort-imports': '*'
@@ -3472,14 +3472,13 @@ packages:
       prettier-plugin-twig-melody:
         optional: true
     dependencies:
-      prettier: 3.0.3
-    dev: false
+      prettier: 3.1.0
+    dev: true
 
-  /prettier@3.0.3:
-    resolution: {integrity: sha512-L/4pUDMxcNa8R/EthV08Zt42WBO4h1rarVtK0K+QJG0X187OLo7l699jWw0GKuwzkPQ//jMFA/8Xm6Fh3J/DAg==}
+  /prettier@3.1.0:
+    resolution: {integrity: sha512-TQLvXjq5IAibjh8EpBIkNKxO749UEWABoiIZehEPiY4GNpVdhaFKqSTu+QrlU6D2dPAfubRmtJTi4K4YkQ5eXw==}
     engines: {node: '>=14'}
     hasBin: true
-    dev: false
 
   /pretty-bytes@5.6.0:
     resolution: {integrity: sha512-FFw039TmrBqFK8ma/7OL3sDz/VytdtJr044/QUJtH0wK9lb9jLq9tJyIxUwtQJHwar2BqtiA4iCWSwo9JLkzFg==}
