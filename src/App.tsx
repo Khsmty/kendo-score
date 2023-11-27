@@ -607,12 +607,12 @@ function App() {
         <dialog id="player_modal" className="modal">
           <form method="dialog" className="modal-box max-w-[700px]">
             <h3 className="mb-5 text-lg font-bold">選手名入力</h3>
-            <hr className="mb-5 border-b-gray-400 lg:hidden" />
+            <hr className="mb-5 border-b-gray-400 md:hidden" />
 
             <div className="flex flex-col gap-5">
-              <div className="flex flex-col items-center justify-center gap-3 lg:flex-row">
+              <div className="flex flex-col items-center justify-center gap-3 md:flex-row">
                 <input
-                  className="input input-error order-2 w-full lg:order-1 lg:w-64"
+                  className="input input-error order-2 w-full md:order-1 md:w-64"
                   value={playersData.red.name}
                   onChange={(e) =>
                     setPlayersData({
@@ -621,9 +621,9 @@ function App() {
                     })
                   }
                 />
-                <span className="order-1 w-16 text-lg lg:order-2">団体名</span>
+                <span className="order-1 w-16 text-lg md:order-2">団体名</span>
                 <input
-                  className="input input-bordered order-3 w-full lg:w-64"
+                  className="input input-bordered order-3 w-full md:w-64"
                   value={playersData.white.name}
                   onChange={(e) =>
                     setPlayersData({
@@ -637,45 +637,45 @@ function App() {
 
               {settingsData.playerTitles.map((title, index) => (
                 <div key={index}>
-                  <div className="flex flex-col items-center justify-center gap-3 lg:flex-row">
+                  <div className="flex flex-col items-center justify-center gap-3 md:flex-row">
                     <input
-                      className="input input-error order-2 w-full lg:order-1 lg:w-64"
+                      className="input input-error order-2 w-full md:order-1 md:w-64"
                       value={playersData.red.players[index]?.name || ''}
                       onChange={(e) =>
                         updatePlayerName('red', index, e.target.value)
                       }
                     />
-                    <span className="order-1 w-16 text-lg lg:order-2">
+                    <span className="order-1 w-16 text-lg md:order-2">
                       {title}
                     </span>
                     <input
-                      className="input input-bordered order-3 w-full lg:w-64"
+                      className="input input-bordered order-3 w-full md:w-64"
                       value={playersData.white.players[index]?.name || ''}
                       onChange={(e) =>
                         updatePlayerName('white', index, e.target.value)
                       }
                     />
                   </div>
-                  <hr className="mt-5 border-b-gray-400 lg:hidden" />
+                  <hr className="mt-5 border-b-gray-400 md:hidden" />
                 </div>
               ))}
 
               {settingsData.daihyo && (
                 <>
-                  <hr className="hidden border-b-gray-400 lg:block" />
-                  <div className="flex flex-col items-center justify-center gap-3  lg:flex-row">
+                  <hr className="hidden border-b-gray-400 md:block" />
+                  <div className="flex flex-col items-center justify-center gap-3  md:flex-row">
                     <input
-                      className="input input-error order-2 w-full lg:order-1 lg:w-64"
+                      className="input input-error order-2 w-full md:order-1 md:w-64"
                       value={playersData.red.daihyo.name}
                       onChange={(e) =>
                         updatePlayerName('red', 99, e.target.value)
                       }
                     />
-                    <span className="order-1 w-16 text-lg lg:order-2">
+                    <span className="order-1 w-16 text-lg md:order-2">
                       代表戦
                     </span>
                     <input
-                      className="input input-bordered order-3 w-full lg:w-64"
+                      className="input input-bordered order-3 w-full md:w-64"
                       value={playersData.white.daihyo.name}
                       onChange={(e) =>
                         updatePlayerName('white', 99, e.target.value)
@@ -806,8 +806,8 @@ function App() {
       </div>
 
       {/* スコア入力ボタン (ボタン2段目) */}
-      <div className="mt-7 flex flex-col justify-center gap-4 text-center lg:flex-row">
-        <div className="flex flex-col items-center gap-2 lg:items-end">
+      <div className="mt-7 flex flex-col justify-center gap-4 text-center md:flex-row">
+        <div className="flex flex-col items-center gap-2 md:items-end">
           <div className="flex gap-2">
             {ipponTypes.map((type) => {
               return (
@@ -836,7 +836,7 @@ function App() {
             </button>
           </div>
         </div>
-        <div className="flex flex-col items-center gap-2 lg:items-start">
+        <div className="flex flex-col items-center gap-2 md:items-start">
           <div className="flex gap-2">
             {ipponTypes.map((type) => {
               return (
