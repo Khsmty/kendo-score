@@ -535,13 +535,25 @@ function App() {
       return;
     }
 
+    if (
+      window.innerWidth < 760 &&
+      !confirm(
+        '画面の幅が狭いため、正常に画像をダウンロードできない場合があります。\nスマホの場合は、画面を横向きにしてのダウンロードを推奨します。\n\n(このメッセージを無視してダウンロードを続行する場合は「OK」を押してください)',
+      )
+    ) {
+      return;
+    }
+
     setStateData({ ...stateData, isDownloading: true });
 
     const element = scoreboardRef.current;
     const toImg = await toJpeg(element!);
 
     const link = document.createElement('a');
-    link.download = 'scoreboard.jpeg';
+    link.download =
+      playersData.red.name && playersData.white.name
+        ? `${playersData.red.name} vs ${playersData.white.name}.jpeg`
+        : 'scoreboard.jpeg';
     link.href = toImg;
     link.click();
 
