@@ -4,7 +4,7 @@ export default function HelpBtn() {
   return (
     <div className="fixed bottom-4 right-4">
       <a
-        href="https://cms.taigasaito.org/kendo-score"
+        href="https://taigasaito.org/kendo-score/"
         target="_blank"
         className="btn btn-sm gap-1"
       >
