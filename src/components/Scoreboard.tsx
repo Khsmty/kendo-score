@@ -9,7 +9,7 @@ export default function Scoreboard() {
   const settingsData = useAtomValue(settingsAtom);
 
   return (
-    <table className="h-[345px] table-fixed border-collapse break-all bg-white text-center text-xl">
+    <table className="h-[345px] w-[754px] table-fixed border-collapse break-all bg-white text-center text-xl">
       <tbody className="border border-black">
         {/* タイトル (表1段目) */}
         <tr className="h-[51px] border-b border-black">
