@@ -547,7 +547,12 @@ function App() {
     setStateData({ ...stateData, isDownloading: true });
 
     const element = scoreboardRef.current;
-    const toImg = await toJpeg(element!);
+    const toImg = await toJpeg(element!, {
+      width: element!.scrollWidth,
+      canvasWidth: element!.scrollWidth,
+      height: element!.scrollHeight,
+      canvasHeight: element!.scrollHeight,
+    });
 
     const link = document.createElement('a');
     link.download =
@@ -563,7 +568,11 @@ function App() {
   return (
     <div className="flex min-h-[100svh] touch-manipulation flex-col items-center justify-center py-3">
       <div
-        className="max-w-[100vw] overflow-x-auto bg-white p-3"
+        className={`bg-white p-3 ${
+          !stateData.isDownloading
+            ? 'max-w-[100vw] overflow-x-auto'
+            : 'max-w-none overflow-visible'
+        }`}
         ref={scoreboardRef}
       >
         <Scoreboard />
@@ -572,6 +581,7 @@ function App() {
       {/* ボタン1段目 */}
       <div className="mt-5 flex flex-wrap justify-center gap-4 text-center">
         <button
+          type="button"
           className="btn"
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-expect-error
@@ -868,7 +878,7 @@ function App() {
       </div>
 
       {/* 選手切り替えボタン (ボタン3段目) */}
-      <div className="mt-7 mb-16 md:mb-0 flex justify-center gap-4 text-center">
+      <div className="mb-16 mt-7 flex justify-center gap-4 text-center md:mb-0">
         <button className="btn" onClick={() => changePlayer('prev')}>
           <ArrowLeftIcon className="h-5 w-5" />
           前選手へ
