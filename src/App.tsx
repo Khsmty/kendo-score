@@ -535,15 +535,6 @@ function App() {
       return;
     }
 
-    if (
-      window.innerWidth < 760 &&
-      !confirm(
-        '画面の幅が狭いため、正常に画像をダウンロードできない場合があります。\nスマホの場合は、画面を横向きにしてのダウンロードを推奨します。\n\nダウンロードを続行しますか？',
-      )
-    ) {
-      return;
-    }
-
     setStateData({ ...stateData, isDownloading: true });
 
     const element = scoreboardRef.current;
@@ -591,6 +582,7 @@ function App() {
           選手名入力
         </button>
         <button
+          type="button"
           className="btn"
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-expect-error
@@ -600,6 +592,7 @@ function App() {
           表設定変更
         </button>
         <button
+          type="button"
           className="btn"
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-expect-error
@@ -608,7 +601,7 @@ function App() {
           <ArrowPathIcon className="h-5 w-5" />
           リセット
         </button>
-        <button className="btn" onClick={downloadImg}>
+        <button type="button" className="btn" onClick={downloadImg}>
           <ArrowDownTrayIcon className="h-5 w-5" />
           ダウンロード
         </button>
@@ -697,11 +690,13 @@ function App() {
             </div>
 
             <div className="modal-action">
-              <button className="btn">閉じる</button>
+              <button type="submit" className="btn">
+                閉じる
+              </button>
             </div>
           </form>
           <form method="dialog" className="modal-backdrop">
-            <button>close</button>
+            <button type="submit">close</button>
           </form>
         </dialog>
 

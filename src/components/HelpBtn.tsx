@@ -6,6 +6,7 @@ export default function HelpBtn() {
       <a
         href="https://taigasaito.org/kendo-score/"
         target="_blank"
+        rel="noreferrer"
         className="btn btn-sm gap-1"
       >
         <QuestionMarkCircleIcon className="h-4 w-4" />

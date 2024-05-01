@@ -8,23 +8,22 @@ export default function Toast() {
   return (
     <>
       {stateData.toast.show && (
-        <div className="toast toast-center">
-          <div className="alert max-w-[90vw] gap-2 bg-gray-800 text-white">
-            <InformationCircleIcon className="h-5 w-5" />
+        <div className="toast toast-center z-50 w-max whitespace-normal">
+          <div className="alert max-w-[90vw] gap-2 border-none bg-gray-800 text-white">
+            <InformationCircleIcon className="hidden h-5 w-5 md:block" />
             <span>{stateData.toast.message}</span>
-            <div>
-              <button
-                className="btn btn-sm"
-                onClick={() =>
-                  setStateData({
-                    ...stateData,
-                    toast: { show: false, message: '' },
-                  })
-                }
-              >
-                OK
-              </button>
-            </div>
+            <button
+              type="button"
+              className="btn btn-sm"
+              onClick={() =>
+                setStateData({
+                  ...stateData,
+                  toast: { show: false, message: '' },
+                })
+              }
+            >
+              OK
+            </button>
           </div>
         </div>
       )}
