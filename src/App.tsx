@@ -868,7 +868,7 @@ function App() {
       </div>
 
       {/* 選手切り替えボタン (ボタン3段目) */}
-      <div className="my-7 flex justify-center gap-4 text-center">
+      <div className="mt-7 mb-16 md:mb-0 flex justify-center gap-4 text-center">
         <button className="btn" onClick={() => changePlayer('prev')}>
           <ArrowLeftIcon className="h-5 w-5" />
           前選手へ

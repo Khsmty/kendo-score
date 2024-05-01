@@ -8,8 +8,17 @@ export default function Scoreboard() {
   const playersData = useAtomValue(playersAtom);
   const settingsData = useAtomValue(settingsAtom);
 
+  const tableWidth =
+    170 +
+    84 * settingsData.playerTitles.length +
+    80 +
+    84 * (settingsData.daihyo ? 1 : 0);
+
   return (
-    <table className="h-[345px] w-[754px] table-fixed border-collapse break-all bg-white text-center text-xl">
+    <table
+      className="h-[345px] table-fixed border-collapse break-all bg-white text-center text-xl"
+      style={{ width: `${tableWidth}px` }}
+    >
       <tbody className="border border-black">
         {/* タイトル (表1段目) */}
         <tr className="h-[51px] border-b border-black">
@@ -17,10 +26,9 @@ export default function Scoreboard() {
 
           {settingsData.playerTitles.map((title, index) => (
             <th
-              className={
-                'w-[84px] border-r border-black' +
-                (scoreData.playing === index ? ' bg-green-300' : '')
-              }
+              className={`w-[84px] border-r border-black${
+                scoreData.playing === index ? ' bg-green-300' : ''
+              }`}
               colSpan={2}
               key={index}
             >
@@ -34,9 +42,9 @@ export default function Scoreboard() {
 
           {settingsData.daihyo && (
             <th
-              className={
-                'w-[84px]' + (scoreData.playing === 99 ? ' bg-green-300' : '')
-              }
+              className={`w-[84px]${
+                scoreData.playing === 99 ? ' bg-green-300' : ''
+              }`}
               colSpan={2}
             >
               代表戦
@@ -92,8 +100,9 @@ export default function Scoreboard() {
                     strokeLinecap="round"
                     className="absolute -left-2 top-2"
                   >
-                    <line x1="18" y1="9" x2="6" y2="27"></line>
-                    <line x1="6" y1="9" x2="18" y2="27"></line>
+                    <title>バツ (引き分け)</title>
+                    <line x1="18" y1="9" x2="6" y2="27" />
+                    <line x1="6" y1="9" x2="18" y2="27" />
                   </svg>
                 )}
               </td>
@@ -122,7 +131,7 @@ export default function Scoreboard() {
               <SquareSvg
                 className="absolute -left-0.5 top-0"
                 size={85}
-                strokeWidth={0.5}
+                strokeWidth={0.3}
               />
             )}
             {scoreData.winner === 'white' && (
@@ -206,7 +215,7 @@ export default function Scoreboard() {
               <SquareSvg
                 className="absolute -left-0.5 top-0"
                 size={85}
-                strokeWidth={0.5}
+                strokeWidth={0.3}
               />
             )}
             {scoreData.winner === 'red' && (

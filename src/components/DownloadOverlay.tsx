@@ -10,7 +10,7 @@ export default function DownloadOverlay() {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="card w-96 bg-base-100">
             <div className="card-body flex flex-col items-center text-center">
-              <span className="loading loading-spinner loading-lg text-blue-700"></span>
+              <span className="loading loading-spinner loading-lg text-blue-700" />
 
               <h2 className="card-title justify-center">ダウンロード中</h2>
               <p>
