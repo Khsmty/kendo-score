@@ -19,7 +19,7 @@ export default function Scoreboard() {
       className="h-[345px] table-fixed border-collapse break-all bg-white text-center text-xl"
       style={{ width: `${tableWidth}px` }}
     >
-      <tbody className="border border-black">
+      <tbody className="border border-black text-black">
         {/* タイトル (表1段目) */}
         <tr className="h-[51px] border-b border-black">
           <th className="w-[170px] border-r border-black">団体名</th>
@@ -122,9 +122,9 @@ export default function Scoreboard() {
 
             {scoreData.winner === 'red' && (
               <CircleSvg
-                className="absolute left-0 top-0.5"
-                size={80}
-                strokeWidth={0.5}
+                className="absolute -left-0.5 top-0"
+                size={85}
+                strokeWidth={0.3}
               />
             )}
             {scoreData.winner === 'draw' && (
@@ -138,7 +138,7 @@ export default function Scoreboard() {
               <TriangleSvg
                 className="absolute -left-0.5 top-0"
                 size={85}
-                strokeWidth={0.5}
+                strokeWidth={0.3}
               />
             )}
           </td>
@@ -206,9 +206,9 @@ export default function Scoreboard() {
 
             {scoreData.winner === 'white' && (
               <CircleSvg
-                className="absolute left-0 top-0.5"
-                size={80}
-                strokeWidth={0.5}
+                className="absolute -left-0.5 top-0"
+                size={85}
+                strokeWidth={0.3}
               />
             )}
             {scoreData.winner === 'draw' && (
@@ -222,7 +222,7 @@ export default function Scoreboard() {
               <TriangleSvg
                 className="absolute -left-0.5 top-0"
                 size={85}
-                strokeWidth={0.5}
+                strokeWidth={0.3}
               />
             )}
           </td>
