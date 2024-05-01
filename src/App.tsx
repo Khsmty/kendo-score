@@ -80,7 +80,8 @@ function App() {
         '対戦が開始されていません。[次選手へ] を押してください。',
       );
       return;
-    } else if (scoreData.playing === 100) {
+    }
+    if (scoreData.playing === 100) {
       openMessageDialog(
         'error',
         '対戦が終了しています。[リセット] を押してください。',
@@ -181,7 +182,8 @@ function App() {
         '対戦が開始されていません。[次選手へ] を押してください。',
       );
       return;
-    } else if (scoreData.playing === 100) {
+    }
+    if (scoreData.playing === 100) {
       openMessageDialog(
         'error',
         '対戦が終了しています。[リセット] を押してください。',
@@ -327,8 +329,8 @@ function App() {
 
     // 勝数と一本数を計算
     for (let i = 0; i <= settingsData.playerCount; i++) {
-      const red = scoreData.score['red'][i]?.length || 0;
-      const white = scoreData.score['white'][i]?.length || 0;
+      const red = scoreData.score.red[i]?.length || 0;
+      const white = scoreData.score.white[i]?.length || 0;
 
       ipponCount.red += red;
       ipponCount.white += white;
@@ -639,7 +641,7 @@ function App() {
               <hr className="border-b-gray-400" />
 
               {settingsData.playerTitles.map((title, index) => (
-                <div key={index}>
+                <div key={title}>
                   <div className="flex flex-col items-center justify-center gap-3 md:flex-row">
                     <input
                       className="input input-error order-2 w-full md:order-1 md:w-64"
@@ -763,11 +765,13 @@ function App() {
             </table>
 
             <div className="modal-action">
-              <button className="btn">閉じる</button>
+              <button type="submit" className="btn">
+                閉じる
+              </button>
             </div>
           </form>
           <form method="dialog" className="modal-backdrop">
-            <button>close</button>
+            <button type="submit">close</button>
           </form>
         </dialog>
 
@@ -781,18 +785,21 @@ function App() {
 
             <div className="mt-5 flex flex-col gap-2">
               <button
+                type="button"
                 className="btn btn-error btn-block"
                 onClick={() => reset('score')}
               >
                 スコアのみリセット
               </button>
               <button
+                type="button"
                 className="btn btn-error btn-block"
                 onClick={() => reset('players')}
               >
                 スコアと選手名をリセット
               </button>
               <button
+                type="button"
                 className="btn btn-error btn-block"
                 onClick={() => reset('all')}
               >
@@ -801,11 +808,13 @@ function App() {
             </div>
 
             <div className="modal-action">
-              <button className="btn">キャンセル</button>
+              <button type="submit" className="btn">
+                キャンセル
+              </button>
             </div>
           </form>
           <form method="dialog" className="modal-backdrop">
-            <button>close</button>
+            <button type="submit">close</button>
           </form>
         </dialog>
       </div>
@@ -817,6 +826,7 @@ function App() {
             {ipponTypes.map((type) => {
               return (
                 <button
+                  type="button"
                   className="btn w-16 bg-red-700 text-white hover:bg-red-800"
                   key={type}
                   onClick={() => ippon(type, 'red')}
@@ -828,12 +838,14 @@ function App() {
           </div>
           <div className="flex gap-2">
             <button
+              type="button"
               className="btn bg-red-700 text-white hover:bg-red-800"
               onClick={() => ippon('○', 'red')}
             >
               不戦勝
             </button>
             <button
+              type="button"
               className="btn bg-red-700 text-white hover:bg-red-800"
               onClick={() => revert('red')}
             >
@@ -846,6 +858,7 @@ function App() {
             {ipponTypes.map((type) => {
               return (
                 <button
+                  type="button"
                   className="btn w-16 bg-gray-500 text-white hover:bg-gray-400"
                   key={type}
                   onClick={() => ippon(type, 'white')}
@@ -857,12 +870,14 @@ function App() {
           </div>
           <div className="flex gap-2">
             <button
+              type="button"
               className="btn bg-gray-500 text-white hover:bg-gray-400"
               onClick={() => ippon('○', 'white')}
             >
               不戦勝
             </button>
             <button
+              type="button"
               className="btn bg-gray-500 text-white hover:bg-gray-400"
               onClick={() => revert('white')}
             >
@@ -874,11 +889,19 @@ function App() {
 
       {/* 選手切り替えボタン (ボタン3段目) */}
       <div className="mb-16 mt-7 flex justify-center gap-4 text-center md:mb-0">
-        <button className="btn" onClick={() => changePlayer('prev')}>
+        <button
+          type="button"
+          className="btn"
+          onClick={() => changePlayer('prev')}
+        >
           <ArrowLeftIcon className="h-5 w-5" />
           前選手へ
         </button>
-        <button className="btn" onClick={() => changePlayer('next')}>
+        <button
+          type="button"
+          className="btn"
+          onClick={() => changePlayer('next')}
+        >
           次選手へ
           <ArrowRightIcon className="h-5 w-5" />
         </button>

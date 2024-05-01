@@ -30,7 +30,7 @@ export default function Scoreboard() {
                 scoreData.playing === index ? ' bg-green-300' : ''
               }`}
               colSpan={2}
-              key={index}
+              key={title}
             >
               {title}
             </th>
@@ -61,11 +61,11 @@ export default function Scoreboard() {
             {playersData.red.name || ''}
           </td>
 
-          {settingsData.playerTitles.map((_title, index) => (
+          {settingsData.playerTitles.map((title, index) => (
             <td
               className="h-[63px] border-r border-black bg-red-100"
               colSpan={2}
-              key={index}
+              key={title}
             >
               {playersData.red.players[index]?.name}
             </td>
@@ -80,8 +80,8 @@ export default function Scoreboard() {
 
         {/* スコア表示セル1段目 (表3段目) */}
         <tr>
-          {settingsData.playerTitles.map((_title, index) => (
-            <React.Fragment key={index}>
+          {settingsData.playerTitles.map((title, index) => (
+            <React.Fragment key={title}>
               <td className="relative h-[42px] w-[42px] pb-0.5 pr-0.5 text-right align-bottom text-[2rem]">
                 {scoreData.score.red?.[index]?.[0]}
 
@@ -161,9 +161,9 @@ export default function Scoreboard() {
 
         {/* スコア表示セル2段目 (表4段目) */}
         <tr className="border-b border-black">
-          {settingsData.playerTitles.map((_title, index) => (
-            <React.Fragment key={index}>
-              <td className="h-[42px] w-[42px]"></td>
+          {settingsData.playerTitles.map((title, index) => (
+            <React.Fragment key={title}>
+              <td className="h-[42px] w-[42px]" />
               <td className="h-[42px] w-[42px] border-r border-black pl-0.5 pt-0.5 text-left align-top text-[2rem]">
                 {scoreData.score.red?.[index]?.[1]}
               </td>
@@ -172,8 +172,8 @@ export default function Scoreboard() {
 
           {settingsData.daihyo && (
             <>
-              <td className="h-[42px] w-[42px]"></td>
-              <td className="h-[42px] w-[42px]"></td>
+              <td className="h-[42px] w-[42px]" />
+              <td className="h-[42px] w-[42px]" />
             </>
           )}
         </tr>
@@ -187,9 +187,9 @@ export default function Scoreboard() {
             {playersData.white.name || ''}
           </td>
 
-          {settingsData.playerTitles.map((_title, index) => (
-            <React.Fragment key={index}>
-              <td className="h-[42px] w-[42px]"></td>
+          {settingsData.playerTitles.map((title, index) => (
+            <React.Fragment key={title}>
+              <td className="h-[42px] w-[42px]" />
               <td className="h-[42px] w-[42px] border-r border-black pb-0.5 pl-0.5 text-left align-bottom text-[2rem]">
                 {scoreData.score.white?.[index]?.[1]}
               </td>
@@ -245,8 +245,8 @@ export default function Scoreboard() {
 
         {/* スコア表示セル4段目 (表6段目) */}
         <tr className="border-b border-black">
-          {settingsData.playerTitles.map((_title, index) => (
-            <React.Fragment key={index}>
+          {settingsData.playerTitles.map((title, index) => (
+            <React.Fragment key={title}>
               <td className="relative h-[42px] w-[42px] pr-0.5 pt-0.5 text-right align-top text-[2rem]">
                 {scoreData.score.white?.[index]?.[0]}
 
@@ -262,25 +262,25 @@ export default function Scoreboard() {
 
           {settingsData.daihyo && (
             <>
-              <td className="h-[42px] w-[42px]"></td>
-              <td className="h-[42px] w-[42px]"></td>
+              <td className="h-[42px] w-[42px]" />
+              <td className="h-[42px] w-[42px]" />
             </>
           )}
         </tr>
 
         {/* 白選手名表示セル (表7段目) */}
         <tr>
-          {settingsData.playerTitles.map((_title, index) => (
+          {settingsData.playerTitles.map((title, index) => (
             <td
               className="h-[63px] border-r border-black bg-gray-200"
               colSpan={2}
-              key={index}
+              key={title}
             >
               {playersData.white.players[index]?.name}
             </td>
           ))}
 
-          <td className="border-r border-black"></td>
+          <td className="border-r border-black" />
 
           {settingsData.daihyo && (
             <td className="h-[63px] bg-gray-200" colSpan={2}>

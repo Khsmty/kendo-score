@@ -36,11 +36,13 @@ export default function MessageDialog() {
         {stateData.messageDialog.message}
 
         <div className="modal-action">
-          <button className="btn">OK</button>
+          <button type="submit" className="btn">
+            OK
+          </button>
         </div>
       </form>
       <form method="dialog" className="modal-backdrop">
-        <button>close</button>
+        <button type="submit">close</button>
       </form>
     </dialog>
   );
