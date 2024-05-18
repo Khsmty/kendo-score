@@ -785,22 +785,22 @@ function App() {
 
             <div className="mt-5 flex flex-col gap-2">
               <button
-                type="button"
-                className="btn btn-error btn-block"
+                type="submit"
+                className="btn btn-block bg-red-600 text-white hover:bg-red-700"
                 onClick={() => reset('score')}
               >
                 スコアのみリセット
               </button>
               <button
-                type="button"
-                className="btn btn-error btn-block"
+                type="submit"
+                className="btn btn-block bg-red-600 text-white hover:bg-red-700"
                 onClick={() => reset('players')}
               >
                 スコアと選手名をリセット
               </button>
               <button
-                type="button"
-                className="btn btn-error btn-block"
+                type="submit"
+                className="btn btn-block bg-red-600 text-white hover:bg-red-700"
                 onClick={() => reset('all')}
               >
                 すべてリセット
