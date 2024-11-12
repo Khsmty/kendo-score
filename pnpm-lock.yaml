@@ -28,7 +28,7 @@ dependencies:
     version: 18.3.1(react@18.3.1)
   vite-plugin-pwa:
     specifier: ^0.20.0
-    version: 0.20.5(vite@5.4.10)(workbox-build@7.3.0)(workbox-window@7.1.0)
+    version: 0.20.5(vite@5.4.10)(workbox-build@7.3.0)(workbox-window@7.3.0)
 
 devDependencies:
   '@swc-jotai/react-refresh':
@@ -81,7 +81,7 @@ devDependencies:
     version: 5.4.10
   workbox-window:
     specifier: ^7.0.0
-    version: 7.1.0
+    version: 7.3.0
 
 packages:
 
@@ -216,8 +216,8 @@ packages:
       semver: 6.3.1
     dev: false
 
-  /@babel/helper-define-polyfill-provider@0.6.2(@babel/core@7.26.0):
-    resolution: {integrity: sha512-LV76g+C502biUK6AyZ3LK10vDpDyCzZnhZFXkH1L75zHPj68+qc8Zfpx2th+gzwA2MzyK+1g/3EPl62yFnVttQ==}
+  /@babel/helper-define-polyfill-provider@0.6.3(@babel/core@7.26.0):
+    resolution: {integrity: sha512-HK7Bi+Hj6H+VTHA3ZvBis7V/6hu9QuTrnMXNybfUf2iiuU/N97I8VjB+KbhFF8Rld/Lx5MzoCwPCpPjfK+n8Cg==}
     peerDependencies:
       '@babel/core': ^7.4.0 || ^8.0.0-0 <8.0.0
     dependencies:
@@ -1111,9 +1111,9 @@ packages:
       '@babel/plugin-transform-unicode-regex': 7.25.9(@babel/core@7.26.0)
       '@babel/plugin-transform-unicode-sets-regex': 7.25.9(@babel/core@7.26.0)
       '@babel/preset-modules': 0.1.6-no-external-plugins(@babel/core@7.26.0)
-      babel-plugin-polyfill-corejs2: 0.4.11(@babel/core@7.26.0)
+      babel-plugin-polyfill-corejs2: 0.4.12(@babel/core@7.26.0)
       babel-plugin-polyfill-corejs3: 0.10.6(@babel/core@7.26.0)
-      babel-plugin-polyfill-regenerator: 0.6.2(@babel/core@7.26.0)
+      babel-plugin-polyfill-regenerator: 0.6.3(@babel/core@7.26.0)
       core-js-compat: 3.39.0
       semver: 6.3.1
     transitivePeerDependencies:
@@ -2146,14 +2146,14 @@ packages:
       possible-typed-array-names: 1.0.0
     dev: false
 
-  /babel-plugin-polyfill-corejs2@0.4.11(@babel/core@7.26.0):
-    resolution: {integrity: sha512-sMEJ27L0gRHShOh5G54uAAPaiCOygY/5ratXuiyb2G46FmlSpc9eFCzYVyDiPxfNbwzA7mYahmjQc5q+CZQ09Q==}
+  /babel-plugin-polyfill-corejs2@0.4.12(@babel/core@7.26.0):
+    resolution: {integrity: sha512-CPWT6BwvhrTO2d8QVorhTCQw9Y43zOu7G9HigcfxvepOU6b8o3tcWad6oVgZIsZCTt42FFv97aA7ZJsbM4+8og==}
     peerDependencies:
       '@babel/core': ^7.4.0 || ^8.0.0-0 <8.0.0
     dependencies:
       '@babel/compat-data': 7.26.2
       '@babel/core': 7.26.0
-      '@babel/helper-define-polyfill-provider': 0.6.2(@babel/core@7.26.0)
+      '@babel/helper-define-polyfill-provider': 0.6.3(@babel/core@7.26.0)
       semver: 6.3.1
     transitivePeerDependencies:
       - supports-color
@@ -2165,19 +2165,19 @@ packages:
       '@babel/core': ^7.4.0 || ^8.0.0-0 <8.0.0
     dependencies:
       '@babel/core': 7.26.0
-      '@babel/helper-define-polyfill-provider': 0.6.2(@babel/core@7.26.0)
+      '@babel/helper-define-polyfill-provider': 0.6.3(@babel/core@7.26.0)
       core-js-compat: 3.39.0
     transitivePeerDependencies:
       - supports-color
     dev: false
 
-  /babel-plugin-polyfill-regenerator@0.6.2(@babel/core@7.26.0):
-    resolution: {integrity: sha512-2R25rQZWP63nGwaAswvDazbPXfrM3HwVoBXK6HcqeKrSrL/JqcC/rDcf95l4r7LXLyxDXc8uQDa064GubtCABg==}
+  /babel-plugin-polyfill-regenerator@0.6.3(@babel/core@7.26.0):
+    resolution: {integrity: sha512-LiWSbl4CRSIa5x/JAU6jZiG9eit9w6mz+yVMFwDE83LAWvt0AfGBoZ7HS/mkhrKuh2ZlzfVZYKoLjXdqw6Yt7Q==}
     peerDependencies:
       '@babel/core': ^7.4.0 || ^8.0.0-0 <8.0.0
     dependencies:
       '@babel/core': 7.26.0
-      '@babel/helper-define-polyfill-provider': 0.6.2(@babel/core@7.26.0)
+      '@babel/helper-define-polyfill-provider': 0.6.3(@babel/core@7.26.0)
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -4312,7 +4312,7 @@ packages:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
     dev: true
 
-  /vite-plugin-pwa@0.20.5(vite@5.4.10)(workbox-build@7.3.0)(workbox-window@7.1.0):
+  /vite-plugin-pwa@0.20.5(vite@5.4.10)(workbox-build@7.3.0)(workbox-window@7.3.0):
     resolution: {integrity: sha512-aweuI/6G6n4C5Inn0vwHumElU/UEpNuO+9iZzwPZGTCH87TeZ6YFMrEY6ZUBQdIHHlhTsbMDryFARcSuOdsz9Q==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
@@ -4329,7 +4329,7 @@ packages:
       tinyglobby: 0.2.10
       vite: 5.4.10
       workbox-build: 7.3.0
-      workbox-window: 7.1.0
+      workbox-window: 7.3.0
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -4480,12 +4480,8 @@ packages:
       workbox-core: 7.3.0
     dev: false
 
-  /workbox-core@7.1.0:
-    resolution: {integrity: sha512-5KB4KOY8rtL31nEF7BfvU7FMzKT4B5TkbYa2tzkS+Peqj0gayMT9SytSFtNzlrvMaWgv6y/yvP9C0IbpFjV30Q==}
-
   /workbox-core@7.3.0:
     resolution: {integrity: sha512-Z+mYrErfh4t3zi7NVTvOuACB0A/jA3bgxUN3PwtAVHvfEsZxV9Iju580VEETug3zYJRc0Dmii/aixI/Uxj8fmw==}
-    dev: false
 
   /workbox-expiration@7.3.0:
     resolution: {integrity: sha512-lpnSSLp2BM+K6bgFCWc5bS1LR5pAwDWbcKt1iL87/eTSJRdLdAwGQznZE+1czLgn/X05YChsrEegTNxjM067vQ==}
@@ -4557,18 +4553,11 @@ packages:
     resolution: {integrity: sha512-aCUyoAZU9IZtH05mn0ACUpyHzPs0lMeJimAYkQkBsOWiqaJLgusfDCR+yllkPkFRxWpZKF8vSvgHYeG7LwhlmA==}
     dev: false
 
-  /workbox-window@7.1.0:
-    resolution: {integrity: sha512-ZHeROyqR+AS5UPzholQRDttLFqGMwP0Np8MKWAdyxsDETxq3qOAyXvqessc3GniohG6e0mAqSQyKOHmT8zPF7g==}
-    dependencies:
-      '@types/trusted-types': 2.0.7
-      workbox-core: 7.1.0
-
   /workbox-window@7.3.0:
     resolution: {integrity: sha512-qW8PDy16OV1UBaUNGlTVcepzrlzyzNW/ZJvFQQs2j2TzGsg6IKjcpZC1RSquqQnTOafl5pCj5bGfAHlCjOOjdA==}
     dependencies:
       '@types/trusted-types': 2.0.7
       workbox-core: 7.3.0
-    dev: false
 
   /wrap-ansi@7.0.0:
     resolution: {integrity: sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==}
