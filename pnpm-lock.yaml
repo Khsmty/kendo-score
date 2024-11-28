@@ -32,8 +32,8 @@ dependencies:
 
 devDependencies:
   '@swc-jotai/react-refresh':
-    specifier: ^0.1.0
-    version: 0.1.0
+    specifier: ^0.3.0
+    version: 0.3.0
   '@types/react':
     specifier: ^18.2.38
     version: 18.3.12
@@ -1737,8 +1737,8 @@ packages:
       string.prototype.matchall: 4.0.11
     dev: false
 
-  /@swc-jotai/react-refresh@0.1.0:
-    resolution: {integrity: sha512-CWV4W06GdfQo3cW3CoUM2fp7avH4Z/suR7SvECNJnQbr6Sa9U3p7o10nXjNv2zT6z09bbNUPM55HBw5Nwd24Iw==}
+  /@swc-jotai/react-refresh@0.3.0:
+    resolution: {integrity: sha512-WIWesycqFWqFRlfMa/NYON7AX6zTtSwK7z+nVRgdlk2r5iIv2/BDTeRgg3on+YvYlKR7IipioRVswyPOTq/ZKA==}
     dev: true
 
   /@swc/core-darwin-arm64@1.9.2:
